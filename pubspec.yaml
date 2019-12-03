@@ -30,6 +30,7 @@ dependencies:
   image_picker: ^0.6.2+1
   firebase_storage: ^3.0.8
   font_awesome_flutter: ^8.5.0
+  flare_flutter: ^1.7.1
 
 dev_dependencies:
   flutter_test:
