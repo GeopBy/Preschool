@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preschool/screens/chats.dart';
 import 'package:preschool/screens/friends.dart';
@@ -8,6 +9,8 @@ import 'package:preschool/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
   @override
+  final FirebaseUser user;
+  MainScreen({Key key, this.user}) : super(key: key);
   _MainScreenState createState() => _MainScreenState();
 }
 
