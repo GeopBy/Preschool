@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -129,6 +130,8 @@ class _ManageUserPageState extends State<ManageUserPage> {
     );
   }
 
+  static Future<FirebaseUser> register(String email, String password) async {}
+
   Future<void> createUser() async {
     final formState = _formKey.currentState;
     if (formState.validate()) {
@@ -140,10 +143,16 @@ class _ManageUserPageState extends State<ManageUserPage> {
             _class.add(_listidclass[i]);
           }
         }
-        FirebaseUser user = (await FirebaseAuth.instance
+        FirebaseApp app = await FirebaseApp.configure(
+            name: 'Secondary', options: await FirebaseApp.instance.options);
+        FirebaseUser user = (await FirebaseAuth.fromApp(app)
                 .createUserWithEmailAndPassword(
                     email: _email, password: _password))
             .user;
+        // FirebaseUser user = (await FirebaseAuth.instance
+        //         .createUserWithEmailAndPassword(
+        //             email: _email, password: _password))
+        //     .user;
         if (_role == 'teacher') {
           Firestore.instance.runTransaction((transaction) async {
             await transaction.update(

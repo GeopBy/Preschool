@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:preschool/util/data.dart';
+import 'package:preschool/widgets/appbar.dart';
 
 class Notifications extends StatefulWidget {
   @override
@@ -10,20 +11,13 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Notifications",
-        ),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.filter_list,
-            ),
-            onPressed: (){},
-          ),
-        ],
-      ),
+      //  appBar: new AppBar(
+      //   title: new Text("Notifications"),
+      //   automaticallyImplyLeading: false,
+      //   centerTitle: true,
+      //   //  elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
+      // ),
+      // endDrawer: appbar(), 
 
       body: ListView.separated(
         padding: EdgeInsets.all(10),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:preschool/util/data.dart';
+import 'package:preschool/widgets/appbar.dart';
 import 'package:preschool/widgets/chat_item.dart';
 
 class Chats extends StatefulWidget {
@@ -22,43 +23,13 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(
-//        elevation: 4,
-        leading: IconButton(
-          icon: Icon(
-            Icons.keyboard_backspace,
-          ),
-          onPressed: (){},
-        ),
-        title: TextField(
-          decoration: InputDecoration.collapsed(
-            hintText: 'Search',
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.filter_list,
-            ),
-            onPressed: (){},
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Theme.of(context).accentColor,
-          labelColor: Theme.of(context).accentColor,
-          unselectedLabelColor: Theme.of(context).textTheme.caption.color,
-          isScrollable: false,
-          tabs: <Widget>[
-            Tab(
-              text: "Message",
-            ),
-            Tab(
-              text: "Groups",
-            ),
-          ],
-        ),
-      ),
+      //  appBar: new AppBar(
+      //   title: new Text("Chats"),
+      //   automaticallyImplyLeading: false,
+      //   centerTitle: true,
+      //   //  elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
+      // ),
+      // endDrawer: appbar(), 
 
       body: TabBarView(
         controller: _tabController,

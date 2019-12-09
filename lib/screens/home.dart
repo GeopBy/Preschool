@@ -1,75 +1,205 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:preschool/screens/create_post.dart';
 import 'package:preschool/util/data.dart';
-import 'package:flare_flutter/flare_actor.dart';
+import 'package:preschool/widgets/appbar.dart';
 import 'package:preschool/widgets/post_item.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class Home extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  const Home({this.onSignedOut});
+  final VoidCallback onSignedOut;
+
+  _HomeState createState() => _HomeState(onSignedOut);
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
+  VoidCallback onSignedOut;
+  _HomeState(this.onSignedOut);
+  FirebaseUser user;
+  String _idclass;
+  String _profileimage;
+  String _teacher;
+  String _name;
+  var _url =
+      "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60";
+  bool _load = false;
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
+  Future<void> getCurrentUser() async {
+    user = await FirebaseAuth.instance.currentUser();
+    //tim id class
+    await Firestore.instance
+        .collection('Users')
+        .document(user.uid)
+        .get()
+        .then((DocumentSnapshot ds) {
+      _idclass = ds.data['idClass'];
+    });
+    //tim teacher
+    await Firestore.instance
+        .collection('Class')
+        .document(_idclass)
+        .get()
+        .then((DocumentSnapshot ds) {
+      _teacher = ds.data['teacher'];
+    });
+    //tim ten va hinh anh
+    await Firestore.instance
+        .collection('Users')
+        .document(_teacher)
+        .get()
+        .then((DocumentSnapshot ds) {
+      if (ds.data['profileimage'] != null) {
+        _profileimage = ds.data['profileimage'];
+      }
+      if (ds.data['username'] != null) _name = ds.data['username'];
+    });
+    if (_profileimage != null) {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('ProfileImage')
+          .child(_profileimage);
+      _url = await ref.getDownloadURL();
+    }
+    setState(() {
+      _load = true;
+    });
+    print('hhhhhhhhhhhhhhhhhhhhhh' + user.toString());
+  }
+
+  get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-       appBar: new AppBar(
-         
-        title: new Text("Feeds"),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-      //  elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
-      ),
-     endDrawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: <Color>[
+    super.build(context);
+    return _load == false ? buildWaitingScreen() : runHome2();
+  }
 
-                Colors.blue[200],
-                Colors.blueAccent,
-              ])),
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    new Center(
-                      child: CircleAvatar(
-                        backgroundImage: ExactAssetImage(
-                            "assets/cm${random.nextInt(10)}.jpeg"),
-                        minRadius: 20,
-                        maxRadius: 50,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: new Text("Yến Nhi", textScaleFactor: 1.3),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            CustomListTile(Icons.wallpaper, 'Album ảnh', () => {}),
-            CustomListTile(Icons.receipt, 'Đơn xin phép', () => {}),
-            CustomListTile(Icons.child_care, 'Học sinh', () => {}),
-            CustomListTile(Icons.event_note, 'Thời khóa biểu', () => {}),
-            CustomListTile(Icons.fastfood, 'Thực đơn', () => {}),
-            CustomListTile(Icons.person, 'Trang cá nhân', () => {}),
-            CustomListTile(Icons.event_available, 'Sự kiện', () => {}),
-            CustomListTile(Icons.power_settings_new, 'Đăng xuất', () => {}),
-          ],
-        ),
+  Scaffold buildWaitingScreen() {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
       ),
+    );
+  }
+
+  String readTimestamp(Timestamp timeStamp) {
+    int timestamp = timeStamp.millisecondsSinceEpoch;
+    final DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    String time = timeago.format(dateTime);
+    return time;
+  }
+
+  Widget runHome2() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance
+          .collection('Class')
+          .document(_idclass)
+          .collection("Posts")
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return new Text('Loading...');
+          default:
+            return new ListView(
+              children:
+                  snapshot.data.documents.map((DocumentSnapshot document) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: InkWell(
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(_url),
+                          ),
+                          contentPadding: EdgeInsets.all(0),
+                          title: Text(
+                            _name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          trailing: Text(
+                            readTimestamp(document['times']),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                        Image.network(
+                          document['postimage'],
+                          height: 170,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+                        ),
+                      ],
+                    ),
+                    onTap: () {},
+                  ),
+                );
+              }).toList(),
+            );
+        }
+      },
+    );
+  }
+
+  Scaffold runHome() {
+    return Scaffold(
       body: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: posts.length,
         itemBuilder: (BuildContext context, int index) {
           Map post = posts[index];
-          return PostItem(
-            img: post['img'],
-            name: post['name'],
-            dp: post['dp'],
-            time: post['time'],
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: InkWell(
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: CachedNetworkImageProvider(_url),
+                    ),
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                      _name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Text(
+                      post['time'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                  Image.asset(
+                    post['img'],
+                    height: 170,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  ),
+                ],
+              ),
+              onTap: () {},
+            ),
           );
         },
       ),
@@ -77,64 +207,10 @@ class _HomeState extends State<Home> {
         child: Icon(
           Icons.add,
         ),
-        onPressed: () {},
-      ),
-    );
-    
-  }
-}
-
-class FlareActor {}
-
-class CustomListTile extends StatelessWidget {
-  IconData icon;
-  String text;
-  Function onTap;
-
-  CustomListTile(this.icon, this.text, this.onTap);
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.white))),
-        child: InkWell(
-          splashColor: Colors.blueAccent,
-          onTap: onTap,
-          child: Container(
-            //color: Colors.blue[200],
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                      child: Icon(
-                        icon,
-                        color: Colors.blue[300],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
-                      child: Text(
-                        text,
-                        style: TextStyle(fontSize: 15.0, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_right,
-                  color: Colors.blue[200],
-                )
-              ],
-            ),
-          ),
-        ),
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CreatePostPage()));
+        },
       ),
     );
   }

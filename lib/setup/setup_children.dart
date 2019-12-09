@@ -2,19 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/home_demo.dart';
 
 class SetupChildrenPage extends StatefulWidget {
   @override
-  final FirebaseUser user;
-  SetupChildrenPage({Key key, this.user}) : super(key: key);
-  _SetupChildrenPageState createState() => _SetupChildrenPageState(user);
+  const SetupChildrenPage({this.onSignedOut});
+  final VoidCallback onSignedOut;
+  _SetupChildrenPageState createState() => _SetupChildrenPageState(onSignedOut);
 }
 
 class _SetupChildrenPageState extends State<SetupChildrenPage> {
-  FirebaseUser user;
-  _SetupChildrenPageState(this.user);
+  _SetupChildrenPageState(this.onSignedOut);
+  VoidCallback onSignedOut;
   String _fullname,
       _name,
       _birth,
@@ -40,7 +41,7 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
 
   List<String> _myclass = List<String>();
   List<String> _mychildren = List<String>();
-
+  FirebaseUser user;
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -65,6 +66,7 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
 
   //lấy id lớp của user hiện tại
   Future<void> _getInfo() async {
+    user = await FirebaseAuth.instance.currentUser();
     await Firestore.instance
         .collection('Users')
         .document(user.uid)
@@ -85,6 +87,8 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
 
   @override
   Widget build(BuildContext context) {
+    _getInfo();
+
     Future setupUser(BuildContext context) async {
       _fullname = _fullnameController.text;
       _name = _nameController.text;
@@ -136,19 +140,23 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
           'fatherjob': _fatherjob,
           'mother': _mother,
           'motherjob': _motherjob,
-        });
-        _add = _add + 1;
-        if (_add < _myclass.length) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SetupChildrenPage(user: user)));
-        } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MainScreen(user: user)));
-        }
+        }).whenComplete(() {
+          _add = _add + 1;
+          if (_add < _myclass.length) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        SetupChildrenPage(onSignedOut: onSignedOut)));
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        MainScreen(onSignedOut: onSignedOut)));
+          }
+        }).catchError((e) => print(e));
+        ;
       }
     }
 

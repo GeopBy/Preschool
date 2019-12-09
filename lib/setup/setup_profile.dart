@@ -8,20 +8,22 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/setup_children.dart';
 
 class SetupProfilePage extends StatefulWidget {
   @override
-  final FirebaseUser user;
-  SetupProfilePage({Key key, this.user}) : super(key: key);
-  _SetupProfilePageState createState() => _SetupProfilePageState(user);
+  const SetupProfilePage({this.onSignedOut});
+  final VoidCallback onSignedOut;
+  _SetupProfilePageState createState() => _SetupProfilePageState(onSignedOut);
 }
 
 class _SetupProfilePageState extends State<SetupProfilePage> {
+  _SetupProfilePageState(this.onSignedOut);
+  VoidCallback onSignedOut;
   FirebaseUser user;
-  _SetupProfilePageState(this.user);
   File _image;
-  String _username, _fullname, _phonenumber, _address, _profileimage;
+  String _username, _fullname, _phonenumber, _address, _profileimage, _role;
   final _addressController = TextEditingController();
   final _fullnameController = TextEditingController();
   final _usernameController = TextEditingController();
@@ -37,17 +39,30 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
     super.dispose();
   }
 
+  getCurrentUser() async {
+    user = await FirebaseAuth.instance.currentUser();
+    await Firestore.instance
+        .collection('Users')
+        .document(user.uid)
+        .get()
+        .then((DocumentSnapshot ds) {
+      _role = ds.data['role'];
+    });
+  }
+
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Future getImage() async {
-      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+      var image = await ImagePicker.pickImage(
+          source: ImageSource.gallery, maxWidth: 960, maxHeight: 675);
       setState(() {
         _image = image;
       });
-    }
-
-    void initState() {
-      super.initState();
     }
 
     Future setupUser(BuildContext context) async {
@@ -76,10 +91,18 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
           "profileimage": _profileimage
         });
       });
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SetupChildrenPage(user: user)));
+      if (_role == 'teacher') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MainScreen(onSignedOut: onSignedOut)));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    SetupChildrenPage(onSignedOut: onSignedOut)));
+      }
     }
 
     return Scaffold(

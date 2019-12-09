@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:preschool/util/data.dart';
+import 'package:preschool/widgets/appbar.dart';
 
 class Friends extends StatefulWidget {
   @override
@@ -10,27 +11,13 @@ class _FriendsState extends State<Friends> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.keyboard_backspace,
-          ),
-          onPressed: (){},
-        ),
-        title: TextField(
-          decoration: InputDecoration.collapsed(
-            hintText: 'Search',
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.filter_list,
-            ),
-            onPressed: (){},
-          ),
-        ],
-      ),
+      //  appBar: new AppBar(
+      //   title: new Text("friends"),
+      //   automaticallyImplyLeading: false,
+      //   centerTitle: true,
+      //   //  elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
+      // ),
+      // endDrawer: appbar(), 
 
 
       body: ListView.separated(
