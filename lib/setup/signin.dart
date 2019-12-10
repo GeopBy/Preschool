@@ -18,9 +18,34 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
-  String _email, _password;
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passController = new TextEditingController();
+  String _email, _password, _error;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-   VoidCallback onSignedIn;
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+
+        return AlertDialog(
+          title: new Text('Thông báo'),
+          content: new Text(_error),
+          actions: <Widget>[
+            new MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: new Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  VoidCallback onSignedIn;
   _SigninPageState(this.onSignedIn);
   @override
   Widget build(BuildContext context) {
@@ -28,37 +53,14 @@ class _SigninPageState extends State<SigninPage> {
       resizeToAvoidBottomInset: false,
       //  backgroundColor:  Color.fromRGBO(38,50,56,1),
 
-      appBar: AppBar(
-        title: Text("Sign in"),
-        centerTitle: true,
-      ),
       body: Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
-            TextFormField(
-              validator: (input) {
-                if (input.isEmpty) {
-                  return 'Vui lòng nhập email ';
-                }
-              },
-              onSaved: (input) => _email = input,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextFormField(
-              validator: (input) {
-                if (input.isEmpty) {
-                  return 'Vui lòng nhập password ';
-                }
-              },
-              onSaved: (input) => _password = input,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            RaisedButton(
-              onPressed: signIn,
-              child: Text('Sign In'),
-            )
+            showLogo(),
+            inputemail(),
+            inputpass(),
+            button(),
           ],
         ),
       ),
@@ -74,8 +76,11 @@ class _SigninPageState extends State<SigninPage> {
 
         final String userId =
             await auth.signInWithEmailAndPassword(_email, _password);
-        print('Signed in: $userId');
-        
+        if (userId != null) {
+          _error = 'Nhập sai mật khẩu';
+        } else
+          print('Signed in: $userId');
+
         onSignedIn();
         // Firestore.instance
         //     .collection('Users')
@@ -98,7 +103,113 @@ class _SigninPageState extends State<SigninPage> {
         // });
       } catch (e) {
         print(e.message);
+        if (e.message ==
+            'The password is invalid or the user does not have a password.') {
+          _error = 'Bạn đã nhập sai mật khẩu';
+        } else {
+          _error = 'Bạn đã nhập sai E-mail';
+        }
+
+        _showDialog();
       }
     }
   }
+
+  Widget inputemail() {
+    return new Theme(
+        data: new ThemeData(
+          primaryColor: Colors.cyan,
+          primaryColorDark: Colors.cyan,
+        ),
+        child: new Padding(
+          padding: EdgeInsets.all(8.0),
+          child: TextFormField(
+            validator: (input) {
+              if (input.isEmpty) {
+                return 'Vui lòng nhập email ';
+              }
+            },
+            onSaved: (input) => _email = input,
+            decoration: new InputDecoration(
+                border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                    borderSide: new BorderSide(color: Colors.teal)),
+                hintText: 'Nhập E-mail',
+                labelText: 'E-mail',
+                prefixIcon: const Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
+                suffixStyle: const TextStyle(color: Colors.green)),
+          ),
+        ));
+  }
+
+  Widget inputpass() {
+    return new Theme(
+        data: new ThemeData(
+          primaryColor: Colors.cyan,
+          primaryColorDark: Colors.cyan,
+        ),
+        child: new Padding(
+          padding: EdgeInsets.all(8.0),
+          child: TextFormField(
+            obscureText: true,
+            validator: (input) {
+              if (input.isEmpty) {
+                return 'Vui lòng nhập pass ';
+              }
+            },
+            onSaved: (input) => _password = input,
+            decoration: new InputDecoration(
+                border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                    borderSide: new BorderSide(color: Colors.purple[300])),
+                hintText: 'Nhập mật khẩu',
+                labelText: 'Mật khẩu',
+                prefixIcon: const Icon(
+                  Icons.vpn_key,
+                  color: Colors.black,
+                ),
+                suffixStyle: const TextStyle(color: Colors.green)),
+          ),
+        ));
+  }
+
+  Widget button() {
+    return Container(
+      width: 250,
+      height: 70,
+      padding: EdgeInsets.only(top: 20),
+      child: RaisedButton(
+        color: Colors.deepPurple[300],
+        child: Text(
+          "Đăng nhập",
+          style: TextStyle(color: Colors.white),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(30),
+        ),
+        onPressed: signIn,
+      ),
+    );
+  }
+}
+
+Widget showLogo() {
+  return new Hero(
+    tag: 'hero',
+    child: Padding(
+      padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        radius: 130.0,
+        child: Image.asset('assets/LGO.jpg'),
+      ),
+    ),
+  );
 }
