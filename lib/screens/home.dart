@@ -82,7 +82,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _load == false ? buildWaitingScreen() : runHome2();
+    return _load == false ? buildWaitingScreen() : runHome();
   }
 
   Scaffold buildWaitingScreen() {
@@ -101,117 +101,78 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     return time;
   }
 
-  Widget runHome2() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection('Class')
-          .document(_idclass)
-          .collection("Posts")
-          .snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return new Text('Loading...');
-          default:
-            return new ListView(
-              children:
-                  snapshot.data.documents.map((DocumentSnapshot document) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: InkWell(
-                    child: Column(
-                      children: <Widget>[
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: CachedNetworkImageProvider(_url),
+  Widget runHome() {
+    return new Scaffold(
+        body: new Center(
+            child: new Column(children: <Widget>[
+          new Expanded(
+              child: new StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance
+                .collection('Class')
+                .document(_idclass)
+                .collection("Posts")
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return new Text('Loading...');
+                default:
+                  return new ListView(
+                    children: snapshot.data.documents
+                        .map((DocumentSnapshot document) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: InkWell(
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage:
+                                      CachedNetworkImageProvider(_url),
+                                ),
+                                contentPadding: EdgeInsets.all(0),
+                                title: Text(
+                                  _name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                trailing: Text(
+                                  readTimestamp(document['times']),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ),
+                              Image.network(
+                                document['postimage'],
+                                height: 170,
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.cover,
+                              ),
+                            ],
                           ),
-                          contentPadding: EdgeInsets.all(0),
-                          title: Text(
-                            _name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          trailing: Text(
-                            readTimestamp(document['times']),
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 11,
-                            ),
-                          ),
+                          onTap: () {},
                         ),
-                        Image.network(
-                          document['postimage'],
-                          height: 170,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.cover,
-                        ),
-                      ],
-                    ),
-                    onTap: () {},
-                  ),
-                );
-              }).toList(),
-            );
-        }
-      },
-    );
-  }
-
-  Scaffold runHome() {
-    return Scaffold(
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        itemCount: posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          Map post = posts[index];
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: InkWell(
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: CachedNetworkImageProvider(_url),
-                    ),
-                    contentPadding: EdgeInsets.all(0),
-                    title: Text(
-                      _name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    trailing: Text(
-                      post['time'],
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ),
-                  Image.asset(
-                    post['img'],
-                    height: 170,
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  ),
-                ],
-              ),
-              onTap: () {},
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add,
-        ),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreatePostPage()));
-        },
-      ),
-    );
+                      );
+                    }).toList(),
+                  );
+              }
+            },
+          ))
+        ])),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CreatePostPage()));
+          },
+        ));
   }
 }

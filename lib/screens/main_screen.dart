@@ -7,9 +7,7 @@ import 'package:preschool/screens/notifications.dart';
 import 'package:preschool/screens/profile.dart';
 import 'package:preschool/setup/auth.dart';
 import 'package:preschool/setup/auth_provider.dart';
-import 'package:preschool/setup/signin.dart';
 import 'package:preschool/util/data.dart';
-import 'package:preschool/widgets/appbar.dart';
 import 'package:preschool/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
