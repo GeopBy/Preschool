@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,25 +8,29 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/setup_children.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:image/image.dart' as Im;
+import 'package:path_provider/path_provider.dart';
 
 class SetupProfilePage extends StatefulWidget {
   @override
   const SetupProfilePage({this.onSignedOut});
   final VoidCallback onSignedOut;
-  _SetupProfilePageState createState() => _SetupProfilePageState(onSignedOut);
+  _SetupProfilePageState createState() => _SetupProfilePageState();
 }
 
 class _SetupProfilePageState extends State<SetupProfilePage> {
-  _SetupProfilePageState(this.onSignedOut);
-  VoidCallback onSignedOut;
   FirebaseUser user;
-  File _image;
   String _username, _fullname, _phonenumber, _address, _profileimage, _role;
   final _addressController = TextEditingController();
   final _fullnameController = TextEditingController();
   final _usernameController = TextEditingController();
   final _phonenumberController = TextEditingController();
   List<String> _myclass = List<String>();
+  File file;
+  String profileId = Uuid().v4();
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -58,29 +60,37 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
   @override
   Widget build(BuildContext context) {
     Future getImage() async {
-      var image = await ImagePicker.pickImage(
+      File file = await ImagePicker.pickImage(
           source: ImageSource.gallery, maxWidth: 960, maxHeight: 675);
       setState(() {
-        _image = image;
+        this.file = file;
       });
     }
 
     Future setupUser(BuildContext context) async {
-      String fileName = basename(_image.path);
-      StorageReference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('ProfileImage').child(fileName);
-      StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      final tempDir = await getTemporaryDirectory();
+
+      final path = tempDir.path;
+      Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
+      final compressedImageFile = File('$path/img_$profileId.jpg')
+        ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
       setState(() {
-        print("Profile Picture uploaded");
-        Scaffold.of(context)
-            .showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
+        file = compressedImageFile;
       });
+
+      StorageUploadTask uploadTask = FirebaseStorage.instance
+          .ref()
+          .child('ProfileImage')
+          .child("profile_$profileId.jpg")
+          .putFile(file);
+      StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
+      String downloadUrl = await storageSnap.ref.getDownloadURL();
+      
       _username = _usernameController.text;
       _fullname = _fullnameController.text;
       _phonenumber = _phonenumberController.text;
       _address = _addressController.text;
-      _profileimage = fileName;
+      _profileimage = downloadUrl;
       Firestore.instance.runTransaction((transaction) async {
         await transaction
             .update(Firestore.instance.collection('Users').document(user.uid), {
@@ -95,13 +105,13 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => MainScreen(onSignedOut: onSignedOut)));
+                builder: (context) => MainScreen(onSignedOut: widget.onSignedOut)));
       } else {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    SetupChildrenPage(onSignedOut: onSignedOut)));
+                    SetupChildrenPage(onSignedOut: widget.onSignedOut)));
       }
     }
 
@@ -135,9 +145,9 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
                           child: new SizedBox(
                             width: 195,
                             height: 195,
-                            child: (_image != null)
+                            child: (file != null)
                                 ? Image.file(
-                                    _image,
+                                    file,
                                     fit: BoxFit.fill,
                                   )
                                 : Image.network(

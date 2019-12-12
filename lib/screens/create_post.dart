@@ -10,7 +10,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image/image.dart' as Im;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:uuid/uuid.dart';
 import '../widgets/progress.dart';
@@ -20,14 +19,13 @@ class CreatePostPage extends StatefulWidget {
   const CreatePostPage({this.onSignedOut});
   final VoidCallback onSignedOut;
 
-  _CreatePostPageState createState() => _CreatePostPageState(onSignedOut);
+  _CreatePostPageState createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage>
     with AutomaticKeepAliveClientMixin<CreatePostPage> {
   final DateTime timestamp = DateTime.now();
-  VoidCallback onSignedOut;
-  _CreatePostPageState(this.onSignedOut);
+
   FirebaseUser user;
   File file;
   bool isUploading = false;
@@ -38,7 +36,6 @@ class _CreatePostPageState extends State<CreatePostPage>
   TextEditingController captionControler = TextEditingController();
   String _idclass;
   String _profileimage;
-  String _url;
   void initState() {
     _getInfo();
     super.initState();
@@ -48,7 +45,6 @@ class _CreatePostPageState extends State<CreatePostPage>
   Future<void> _getInfo() async {
     user = await FirebaseAuth.instance.currentUser();
     print('ccccccccccccccccccccccccccccccc' + user.toString());
-    print(onSignedOut);
     await Firestore.instance
         .collection('Users')
         .document(user.uid)
@@ -57,11 +53,6 @@ class _CreatePostPageState extends State<CreatePostPage>
       _idclass = ds.data['idClass'];
       _profileimage = ds.data['profileimage'];
     });
-    final ref = FirebaseStorage.instance
-        .ref()
-        .child('ProfileImage')
-        .child(_profileimage);
-    _url = await ref.getDownloadURL();
     setState(() {});
   }
 
@@ -168,13 +159,13 @@ class _CreatePostPageState extends State<CreatePostPage>
         .collection('Class')
         .document(_idclass)
         .collection('Posts')
-        .document()
-        .setData({
+        .add({
       "uid": user.uid,
       "postimage": mediaUrl,
       "description": description,
       "location": location,
       "times": timestamp,
+      "stt":timestamp.millisecondsSinceEpoch
     });
   }
 
@@ -198,6 +189,11 @@ class _CreatePostPageState extends State<CreatePostPage>
       postId = Uuid().v4();
       success = true;
     });
+     Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        MainScreen(onSignedOut: widget.onSignedOut)));
   }
 
   Scaffold buildUploadForm() {
@@ -249,7 +245,7 @@ class _CreatePostPageState extends State<CreatePostPage>
           ),
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(_url),
+              backgroundImage: CachedNetworkImageProvider(_profileimage),
             ),
             title: Container(
               width: 250.0,

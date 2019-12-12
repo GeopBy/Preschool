@@ -4,25 +4,25 @@ class User {
   final String id;
   final String username;
   final String email;
-  final String displayName;
-  final String photoUrl;
-  final String bio;
+  final String fullname;
+  final String profileimage;
+  final String address;
 
   User(
       {this.id,
       this.username,
-      this.photoUrl,
       this.email,
-      this.displayName,
-      this.bio});
+      this.fullname,
+      this.profileimage,
+      this.address});
 
   factory User.fromDocument(DocumentSnapshot doc) {
     return User(
         id: doc['id'],
         username: doc['username'],
         email: doc['email'],
-        displayName: doc['displayName'],
-        photoUrl: doc['photoUrl'],
-        bio: doc['bio']);
+        fullname: doc['fullname'],
+        profileimage: doc['profileimage'],
+        address: doc['address']);
   }
 }

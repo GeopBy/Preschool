@@ -10,12 +10,11 @@ class SetupChildrenPage extends StatefulWidget {
   @override
   const SetupChildrenPage({this.onSignedOut});
   final VoidCallback onSignedOut;
-  _SetupChildrenPageState createState() => _SetupChildrenPageState(onSignedOut);
+  _SetupChildrenPageState createState() => _SetupChildrenPageState();
 }
 
 class _SetupChildrenPageState extends State<SetupChildrenPage> {
-  _SetupChildrenPageState(this.onSignedOut);
-  VoidCallback onSignedOut;
+
   String _fullname,
       _name,
       _birth,
@@ -87,9 +86,7 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
 
   @override
   Widget build(BuildContext context) {
-    _getInfo();
-
-    Future setupUser(BuildContext context) async {
+    Future setupUser( ) async {
       _fullname = _fullnameController.text;
       _name = _nameController.text;
       _birth = _birthController.text;
@@ -142,21 +139,22 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
           'motherjob': _motherjob,
         }).whenComplete(() {
           _add = _add + 1;
+          print('nhap be thu'+_add.toString());
+          print('so be la  '+_myclass.length.toString());
           if (_add < _myclass.length) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        SetupChildrenPage(onSignedOut: onSignedOut)));
+                        SetupChildrenPage(onSignedOut: widget.onSignedOut)));
           } else {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        MainScreen(onSignedOut: onSignedOut)));
+                        MainScreen(onSignedOut: widget.onSignedOut)));
           }
         }).catchError((e) => print(e));
-        ;
       }
     }
 
@@ -302,7 +300,7 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
                     RaisedButton(
                       color: Color(0xff476cfb),
                       onPressed: () {
-                        setupUser(context);
+                        setupUser();
                       },
                       elevation: 4.0,
                       splashColor: Colors.blueGrey,

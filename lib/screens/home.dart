@@ -24,10 +24,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   _HomeState(this.onSignedOut);
   FirebaseUser user;
   String _idclass;
-  String _profileimage;
   String _teacher;
   String _name;
-  var _url =
+  String _profileimage =
       "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60";
   bool _load = false;
   void initState() {
@@ -64,13 +63,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       }
       if (ds.data['username'] != null) _name = ds.data['username'];
     });
-    if (_profileimage != null) {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('ProfileImage')
-          .child(_profileimage);
-      _url = await ref.getDownloadURL();
-    }
     setState(() {
       _load = true;
     });
@@ -111,6 +103,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                 .collection('Class')
                 .document(_idclass)
                 .collection("Posts")
+                .orderBy('stt',descending:true)
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -131,7 +124,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                               ListTile(
                                 leading: CircleAvatar(
                                   backgroundImage:
-                                      CachedNetworkImageProvider(_url),
+                                      CachedNetworkImageProvider(_profileimage),
                                 ),
                                 contentPadding: EdgeInsets.all(0),
                                 title: Text(

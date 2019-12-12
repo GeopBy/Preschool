@@ -1,12 +1,15 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class IconBadge extends StatefulWidget {
-
   final IconData icon;
   final double size;
   final Color color;
-
-  IconBadge({Key key, @required this.icon, this.size, this.color})
+  final int count;
+  IconBadge({Key key, @required this.icon, this.size,this.count, this.color})
       : super(key: key);
 
   @override
@@ -14,13 +17,6 @@ class IconBadge extends StatefulWidget {
 }
 
 class _IconBadgeState extends State<IconBadge> {
-
-  int counter = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +41,8 @@ class _IconBadgeState extends State<IconBadge> {
             ),
             child: Padding(
               padding: EdgeInsets.only(top: 1),
-              child:Text(
-                '16',
+              child: Text(
+                widget.count.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 9,

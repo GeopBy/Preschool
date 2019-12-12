@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -55,13 +54,6 @@ class _NotificationsState extends State<Notifications>
       }
       if (ds.data['username'] != null) _name = ds.data['username'];
     });
-    if (_profileimage != null) {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('ProfileImage')
-          .child(_profileimage);
-      _url = await ref.getDownloadURL();
-    }
     setState(() {
       _load = true;
     });
@@ -101,6 +93,7 @@ class _NotificationsState extends State<Notifications>
               .collection('Class')
               .document(_idclass)
               .collection("Posts")
+              .orderBy('stt', descending: true)
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -127,7 +120,8 @@ class _NotificationsState extends State<Notifications>
                       padding: const EdgeInsets.all(8.0),
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(_url),
+                          backgroundImage:
+                              CachedNetworkImageProvider(_profileimage),
                           radius: 25,
                         ),
                         contentPadding: EdgeInsets.all(0),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preschool/screens/chats.dart';
@@ -15,32 +16,50 @@ class MainScreen extends StatefulWidget {
   const MainScreen({this.onSignedOut});
   final VoidCallback onSignedOut;
 
-  _MainScreenState createState() => _MainScreenState(onSignedOut);
+  _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  _MainScreenState(this.onSignedOut);
-  VoidCallback onSignedOut;
   PageController _pageController;
   int _page = 2;
   FirebaseUser user;
-  String _title;
+  String _title, _idclass;
+  int _count = 0;
   void initState() {
-    getCurrentUser();
+    getNumberPost();
     _pageController = PageController(initialPage: 2);
     _title = 'Feeds';
     super.initState();
   }
 
-  getCurrentUser() async {
+  @override
+
+
+  getNumberPost() async {
     user = await FirebaseAuth.instance.currentUser();
+    await Firestore.instance
+        .collection('Users')
+        .document(user.uid)
+        .get()
+        .then((DocumentSnapshot ds) {
+      _idclass = ds.data['idClass'];
+    });
+    //tim so luong post
+    await Firestore.instance
+        .collection('Class')
+        .document(_idclass)
+        .collection('Posts')
+        .getDocuments()
+        .then((ds) {
+      _count = ds.documents.length;
+    });
   }
 
   Future<void> _signOut(BuildContext context) async {
     try {
       final BaseAuth auth = AuthProvider.of(context).auth;
       await auth.signOut();
-      onSignedOut();
+      widget.onSignedOut();
     } catch (e) {
       print(e);
     }
@@ -140,6 +159,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             BottomNavigationBarItem(
               icon: IconBadge(
+                count: _count,
                 icon: Icons.notifications,
               ),
               title: Container(height: 0.0),
@@ -175,7 +195,6 @@ class _MainScreenState extends State<MainScreen> {
       _title = 'Profile';
     }
     print('mmmmmmmmmmmmmmmmmmmmmmmmmmm' + user.toString());
-    print(onSignedOut);
     _pageController.jumpToPage(page);
   }
 
