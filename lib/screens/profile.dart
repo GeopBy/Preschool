@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:preschool/util/data.dart';
-import 'package:preschool/widgets/appbar.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -14,13 +13,6 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //  appBar: new AppBar(
-      //   title: new Text("Profile"),
-      //   automaticallyImplyLeading: false,
-      //   centerTitle: true,
-      //   //  elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
-      // ),
-      // endDrawer: appbar(), 
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Container(

@@ -1,21 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:preschool/setup/auth.dart';
-import 'package:preschool/setup/auth_provider.dart';
 import 'package:preschool/setup/manage_class.dart';
 import 'package:preschool/setup/manage_user.dart';
+import 'package:preschool/setup/root.dart';
 
 class AdminPage extends StatefulWidget {
   @override
   const AdminPage({this.onSignedOut});
   final VoidCallback onSignedOut;
-  _AdminPageState createState() => _AdminPageState(onSignedOut);
+  _AdminPageState createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
   @override
-  _AdminPageState(this.onSignedOut);
-  VoidCallback onSignedOut;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -34,7 +33,7 @@ class _AdminPageState extends State<AdminPage> {
             child: Text('Quản lý lớp'),
           ),
           RaisedButton(
-            onPressed: nagivateToLogin,
+            onPressed: nagivateToSignOut,
             child: Text('Đăng xuất'),
           )
         ],
@@ -44,9 +43,13 @@ class _AdminPageState extends State<AdminPage> {
 
   Future<void> _signOut(BuildContext context) async {
     try {
-      final BaseAuth auth = AuthProvider.of(context).auth;
-      await auth.signOut();
-      onSignedOut();
+      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+      await _firebaseAuth.signOut().whenComplete(() {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RootPage(), fullscreenDialog: true));
+      });
     } catch (e) {
       print(e);
     }
@@ -59,7 +62,7 @@ class _AdminPageState extends State<AdminPage> {
             builder: (context) => ManageUserPage(), fullscreenDialog: true));
   }
 
-  void nagivateToLogin() {
+  void nagivateToSignOut() {
     _signOut(context);
   }
 

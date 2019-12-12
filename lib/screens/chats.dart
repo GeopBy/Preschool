@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:preschool/util/data.dart';
-import 'package:preschool/widgets/appbar.dart';
 import 'package:preschool/widgets/chat_item.dart';
 
 class Chats extends StatefulWidget {

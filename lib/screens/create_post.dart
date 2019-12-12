@@ -16,9 +16,6 @@ import '../widgets/progress.dart';
 
 class CreatePostPage extends StatefulWidget {
   @override
-  const CreatePostPage({this.onSignedOut});
-  final VoidCallback onSignedOut;
-
   _CreatePostPageState createState() => _CreatePostPageState();
 }
 
@@ -39,7 +36,6 @@ class _CreatePostPageState extends State<CreatePostPage>
   void initState() {
     _getInfo();
     super.initState();
-    setState(() {});
   }
 
   Future<void> _getInfo() async {
@@ -53,7 +49,6 @@ class _CreatePostPageState extends State<CreatePostPage>
       _idclass = ds.data['idClass'];
       _profileimage = ds.data['profileimage'];
     });
-    setState(() {});
   }
 
   handleTakePhoto() async {
@@ -165,7 +160,7 @@ class _CreatePostPageState extends State<CreatePostPage>
       "description": description,
       "location": location,
       "times": timestamp,
-      "stt":timestamp.millisecondsSinceEpoch
+      "stt": timestamp.millisecondsSinceEpoch
     });
   }
 
@@ -182,18 +177,14 @@ class _CreatePostPageState extends State<CreatePostPage>
     );
     captionControler.clear();
     locationControler.clear();
-
     setState(() {
       file = null;
       isUploading = false;
       postId = Uuid().v4();
       success = true;
     });
-     Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        MainScreen(onSignedOut: widget.onSignedOut)));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MainScreen()));
   }
 
   Scaffold buildUploadForm() {

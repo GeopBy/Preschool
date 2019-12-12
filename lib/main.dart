@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/admin_page.dart';
-import 'package:preschool/setup/auth.dart';
-import 'package:preschool/setup/auth_provider.dart';
 import 'package:preschool/setup/root.dart';
 import 'package:preschool/setup/setup_profile.dart';
 import 'package:preschool/setup/signin.dart';
@@ -37,23 +35,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     debugShowCheckedModeBanner: false,
-  //     title: Constants.appName,
-  //     theme: isDark ? Constants.darkTheme : Constants.lightTheme,
-  //     home: SigninPage(),
-  //   );
-  // }
   Widget build(BuildContext context) {
-    return AuthProvider(
-      auth: Auth(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: Constants.appName,
-        theme: isDark ? Constants.darkTheme : Constants.lightTheme,
-        home: RootPage(),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: Constants.appName,
+      theme: isDark ? Constants.darkTheme : Constants.lightTheme,
+      home: RootPage(),
     );
   }
+  
 }

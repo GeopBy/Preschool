@@ -15,8 +15,6 @@ import 'package:path_provider/path_provider.dart';
 
 class SetupProfilePage extends StatefulWidget {
   @override
-  const SetupProfilePage({this.onSignedOut});
-  final VoidCallback onSignedOut;
   _SetupProfilePageState createState() => _SetupProfilePageState();
 }
 
@@ -124,14 +122,14 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    MainScreen(onSignedOut: widget.onSignedOut)));
+                    MainScreen()));
       } else if (_role == 'parent') {
         //them thong tin vao parent
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    SetupChildrenPage(onSignedOut: widget.onSignedOut)));
+                    SetupChildrenPage()));
       }
     }
 

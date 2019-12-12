@@ -5,8 +5,6 @@ import 'package:preschool/screens/main_screen.dart';
 
 class SetupChildrenPage extends StatefulWidget {
   @override
-  const SetupChildrenPage({this.onSignedOut});
-  final VoidCallback onSignedOut;
   _SetupChildrenPageState createState() => _SetupChildrenPageState();
 }
 
@@ -173,13 +171,13 @@ class _SetupChildrenPageState extends State<SetupChildrenPage>
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      SetupChildrenPage(onSignedOut: widget.onSignedOut)));
+                      SetupChildrenPage()));
         } else {
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      MainScreen(onSignedOut: widget.onSignedOut)));
+                      MainScreen()));
         }
       }).catchError((e) => print(e));
     }

@@ -7,24 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:preschool/screens/create_post.dart';
 import 'package:preschool/util/data.dart';
-import 'package:preschool/widgets/appbar.dart';
 import 'package:preschool/widgets/post_item.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Home extends StatefulWidget {
   @override
-  const Home({this.onSignedOut});
-  final VoidCallback onSignedOut;
-
-  _HomeState createState() => _HomeState(onSignedOut);
+  _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
-  VoidCallback onSignedOut;
-  _HomeState(this.onSignedOut);
   FirebaseUser user;
   String _idclass;
   String _teacher;
+  bool _viewButton = false;
   String _name;
   String _profileimage =
       "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60";
@@ -43,6 +38,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
         .get()
         .then((DocumentSnapshot ds) {
       _idclass = ds.data['idClass'];
+      if (ds.data['role'] == 'teacher') _viewButton = true;
     });
     //tim teacher
     await Firestore.instance
@@ -63,6 +59,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
       }
       if (ds.data['username'] != null) _name = ds.data['username'];
     });
+    if (!mounted) return;
     setState(() {
       _load = true;
     });
@@ -103,7 +100,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                 .collection('Class')
                 .document(_idclass)
                 .collection("Posts")
-                .orderBy('stt',descending:true)
+                .orderBy('stt', descending: true)
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -158,14 +155,17 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             },
           ))
         ])),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add,
+        floatingActionButton: Visibility(
+          child: FloatingActionButton(
+            child: Icon(
+              Icons.add,
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CreatePostPage()));
+            },
           ),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CreatePostPage()));
-          },
+          visible: _viewButton,
         ));
   }
 }

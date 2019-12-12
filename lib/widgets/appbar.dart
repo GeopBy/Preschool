@@ -1,26 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:preschool/setup/auth.dart';
-import 'package:preschool/setup/auth_provider.dart';
 import 'package:preschool/setup/signin.dart';
 import 'package:preschool/util/data.dart';
 
 class appbar extends StatelessWidget {
   @override
-  const appbar({this.onSignedOut});
-  final VoidCallback onSignedOut;
-
-  Future<void> signOut(BuildContext context) async {
-    try {
-      final BaseAuth auth = AuthProvider.of(context).auth;
-      await auth.signOut();
-      onSignedOut();
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Widget build(BuildContext context) {
     // TODO: implement build
     return Drawer(
@@ -58,12 +43,7 @@ class appbar extends StatelessWidget {
           CustomListTile(Icons.fastfood, 'Thực đơn', () => {}),
           CustomListTile(Icons.person, 'Trang cá nhân', () => {}),
           CustomListTile(Icons.event_available, 'Sự kiện', () => {}),
-          CustomListTile(
-              Icons.power_settings_new,
-              'Đăng xuất',
-              () => 
-                    signOut(context)
-                  )
+          CustomListTile(Icons.power_settings_new, 'Đăng xuất', () => {})
         ],
       ),
     );

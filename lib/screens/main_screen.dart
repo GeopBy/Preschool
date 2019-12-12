@@ -6,16 +6,12 @@ import 'package:preschool/screens/friends.dart';
 import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/notifications.dart';
 import 'package:preschool/screens/profile.dart';
-import 'package:preschool/setup/auth.dart';
-import 'package:preschool/setup/auth_provider.dart';
+import 'package:preschool/setup/root.dart';
 import 'package:preschool/util/data.dart';
 import 'package:preschool/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
   @override
-  const MainScreen({this.onSignedOut});
-  final VoidCallback onSignedOut;
-
   _MainScreenState createState() => _MainScreenState();
 }
 
@@ -33,8 +29,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-
-
   getNumberPost() async {
     user = await FirebaseAuth.instance.currentUser();
     await Firestore.instance
@@ -57,9 +51,13 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _signOut(BuildContext context) async {
     try {
-      final BaseAuth auth = AuthProvider.of(context).auth;
-      await auth.signOut();
-      widget.onSignedOut();
+      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+      await _firebaseAuth.signOut().whenComplete(() {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RootPage(), fullscreenDialog: true));
+      });
     } catch (e) {
       print(e);
     }

@@ -4,17 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/admin_page.dart';
-import 'package:preschool/setup/auth.dart';
-import 'package:preschool/setup/auth_provider.dart';
 import 'package:preschool/setup/home_demo.dart';
+import 'package:preschool/setup/root.dart';
 import 'package:preschool/setup/setup_profile.dart';
 
 class SigninPage extends StatefulWidget {
   @override
-  const SigninPage({this.onSignedIn});
-  final VoidCallback onSignedIn;
-
-  _SigninPageState createState() => _SigninPageState(onSignedIn);
+  _SigninPageState createState() => _SigninPageState();
 }
 
 class _SigninPageState extends State<SigninPage> {
@@ -45,8 +41,6 @@ class _SigninPageState extends State<SigninPage> {
     );
   }
 
-  VoidCallback onSignedIn;
-  _SigninPageState(this.onSignedIn);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,14 +49,10 @@ class _SigninPageState extends State<SigninPage> {
 
       body: Form(
         key: _formKey,
-        child: Column(
-          children: <Widget>[
-            showLogo(),
-            inputemail(),
-            inputpass(),
-            button(),
-          ],
-        ),
+        child: new SingleChildScrollView(
+            child: Column(
+          children: <Widget>[showLogo(), inputemail(), inputpass(), button()],
+        )),
       ),
     );
   }
@@ -72,16 +62,14 @@ class _SigninPageState extends State<SigninPage> {
     if (formState.validate()) {
       formState.save();
       try {
-        final BaseAuth auth = AuthProvider.of(context).auth;
-
-        final String userId =
-            await auth.signInWithEmailAndPassword(_email, _password);
-        if (userId != null) {
-          _error = 'Nhập sai mật khẩu';
-        } else
-          print('Signed in: $userId');
-
-        onSignedIn();
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _email, password: _password)
+            .whenComplete(() {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RootPage(), fullscreenDialog: true));
+        });
         // Firestore.instance
         //     .collection('Users')
         //     .document(user.uid)
