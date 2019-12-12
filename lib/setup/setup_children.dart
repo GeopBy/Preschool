@@ -14,7 +14,6 @@ class SetupChildrenPage extends StatefulWidget {
 }
 
 class _SetupChildrenPageState extends State<SetupChildrenPage> {
-
   String _fullname,
       _name,
       _birth,
@@ -86,7 +85,7 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
 
   @override
   Widget build(BuildContext context) {
-    Future setupUser( ) async {
+    Future setupUser() async {
       _fullname = _fullnameController.text;
       _name = _nameController.text;
       _birth = _birthController.text;
@@ -120,7 +119,7 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
         });
         //thêm trẻ vào parent
         String _id = _ref.documentID;
-        Firestore.instance
+        await Firestore.instance
             .collection('Users')
             .document(user.uid)
             .collection('myChildren')
@@ -139,8 +138,8 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
           'motherjob': _motherjob,
         }).whenComplete(() {
           _add = _add + 1;
-          print('nhap be thu'+_add.toString());
-          print('so be la  '+_myclass.length.toString());
+          print('nhap be thu' + _add.toString());
+          print('so be la  ' + _myclass.length.toString());
           if (_add < _myclass.length) {
             Navigator.push(
                 context,
@@ -160,11 +159,8 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(FontAwesomeIcons.arrowLeft),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text('Thiết lập thông tin cho bé'),
       ),
       body: Builder(
@@ -173,143 +169,277 @@ class _SetupChildrenPageState extends State<SetupChildrenPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  height: 20.0,
+               
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _fullnameController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.face,
+                                    color: Colors.cyan,
+                                ),
+                                hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Họ và tên trẻ'),
+                          ),
+                        ),
+                      ]),
                 ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _fullnameController,
-                          decoration:
-                              InputDecoration(hintText: 'Họ và tên trẻ'),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.local_laundry_service,
+                                  color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Tên thường dùng'),
+                          ),
                         ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _nameController,
-                          decoration:
-                              InputDecoration(hintText: 'Tên thường dùng'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _birthController,
-                          decoration: InputDecoration(hintText: 'Ngày sinh'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _placeofbirthController,
-                          decoration: InputDecoration(hintText: 'Nơi sinh'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _sexController,
-                          decoration: InputDecoration(hintText: 'Giới tính'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _addressController,
-                          decoration: InputDecoration(hintText: 'Địa chỉ'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _countryController,
-                          decoration: InputDecoration(hintText: 'Quốc tịch'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _fatherController,
-                          decoration:
-                              InputDecoration(hintText: 'Họ và tên cha'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _fatherjobController,
-                          decoration:
-                              InputDecoration(hintText: 'Nghề nghiệp của cha'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _motherController,
-                          decoration: InputDecoration(hintText: 'Họ và tên mẹ'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _motherjobController,
-                          decoration:
-                              InputDecoration(hintText: 'Nghề nghiệp của mẹ'),
-                        ),
-                      ),
-                    ]),
-                SizedBox(
-                  height: 20.0,
+                      ]),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    RaisedButton(
-                      color: Color(0xff476cfb),
-                      onPressed: () {
-                        setupUser();
-                      },
-                      elevation: 4.0,
-                      splashColor: Colors.blueGrey,
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white, fontSize: 16.0),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _birthController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.cake,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Ngày sinh'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _placeofbirthController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.location_city,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Nơi sinh'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _sexController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.wc,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Giới tính'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _addressController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.home,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Địa chỉ'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _countryController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.star,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Quốc tịch'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _fatherController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.perm_identity ,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Họ và tên cha'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _fatherjobController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.shop ,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Nghề nghiệp của cha'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _motherController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.person_pin,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Họ và tên mẹ'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _motherjobController,
+                            decoration: InputDecoration(
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.blueGrey[700])),
+                                prefixIcon: Icon(
+                                  Icons.shopping_basket,
+                                    color: Colors.cyan,
+                                ),
+                                    hintStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                                hintText: 'Nghề nghiệp của mẹ'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          width: 250,
+                          height: 70,
+                          padding: EdgeInsets.only(top: 20),
+                          child: RaisedButton(
+                            color: Colors.lightBlue[300],
+                            child: Text(
+                              "Lưu",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30),
+                            ),
+                            onPressed: () {
+                              setupUser();
+                            },
+                          ),
+                       
+
+                       
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               ],
             ),

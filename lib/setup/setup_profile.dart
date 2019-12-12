@@ -85,7 +85,7 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
           .putFile(file);
       StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
       String downloadUrl = await storageSnap.ref.getDownloadURL();
-      
+
       _username = _usernameController.text;
       _fullname = _fullnameController.text;
       _phonenumber = _phonenumberController.text;
@@ -105,7 +105,8 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => MainScreen(onSignedOut: widget.onSignedOut)));
+                builder: (context) =>
+                    MainScreen(onSignedOut: widget.onSignedOut)));
       } else {
         Navigator.push(
             context,
@@ -117,11 +118,8 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(FontAwesomeIcons.arrowLeft),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text('Thiết lập đăng nhập lần đầu'),
       ),
       body: Builder(
@@ -140,7 +138,7 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
                       alignment: Alignment.center,
                       child: CircleAvatar(
                         radius: 100,
-                        backgroundColor: Color(0xff476cfb),
+                        backgroundColor: Colors.cyan[300],
                         child: ClipOval(
                           child: new SizedBox(
                             width: 195,
@@ -159,10 +157,11 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 60.0),
+                      padding: EdgeInsets.only(top: 0.0),
                       child: IconButton(
                         icon: Icon(
                           FontAwesomeIcons.camera,
+                          //  color: Colors.cyanAccent,
                           size: 30.0,
                         ),
                         onPressed: () {
@@ -172,71 +171,176 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 0.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Tên hiển thị',
+                              style: TextStyle(
+                                  fontSize: 15.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 1.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Flexible(
+                          child: new TextField(
+                            controller: _usernameController,
+                            decoration: new InputDecoration(
+                              hintText: "Nhập tên hiển thị",
+                              enabledBorder: new UnderlineInputBorder(
+                                  borderSide:
+                                      new BorderSide(color: Colors.cyan[700])),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding:
+                        EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Họ và tên',
+                              style: TextStyle(
+                                  fontSize: 14.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 1.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Flexible(
+                          child: new TextField(
+                            controller: _fullnameController,
+                            decoration: new InputDecoration(
+                              hintText: "Nhập họ và tên",
+                              enabledBorder: new UnderlineInputBorder(
+                                  borderSide:
+                                      new BorderSide(color: Colors.cyan[700])),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding:
+                        EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Số điện thoại',
+                              style: TextStyle(
+                                  fontSize: 15.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 1.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Flexible(
+                          child: new TextField(
+                              controller: _phonenumberController,
+                              decoration: new InputDecoration(
+                                hintText: "Nhập số điện thoại",
+                                enabledBorder: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: Colors.cyan[700])),
+                              )),
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding:
+                        EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new Text(
+                              'Địa chỉ',
+                              style: TextStyle(
+                                  fontSize: 15.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 1.0),
+                    child: new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Flexible(
+                          child: new TextField(
+                            controller: _addressController,
+                            decoration: new InputDecoration(
+                              hintText: "Nhập địa chỉ",
+                              enabledBorder: new UnderlineInputBorder(
+                                  borderSide:
+                                      new BorderSide(color: Colors.cyan[700])),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(left: 70.0, right: 25.0, top: 2.0),
+                  child: Row(
                     children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _usernameController,
-                          decoration:
-                              InputDecoration(hintText: 'Tên người dùng'),
+                      Container(
+                        width: 250,
+                        height: 70,
+                        padding: EdgeInsets.only(top: 20),
+                        child: RaisedButton(
+                          color: Colors.cyan[300],
+                          child: Text(
+                            "Lưu",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30),
+                          ),
+                          onPressed: () {
+                            setupUser(context);
+                          },
                         ),
                       ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _fullnameController,
-                          decoration:
-                              InputDecoration(hintText: 'Họ và tên đầy đủ'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _phonenumberController,
-                          decoration:
-                              InputDecoration(hintText: 'Số điện thoại'),
-                        ),
-                      ),
-                    ]),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _addressController,
-                          decoration: InputDecoration(hintText: 'Địa chỉ'),
-                        ),
-                      ),
-                    ]),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    RaisedButton(
-                      color: Color(0xff476cfb),
-                      onPressed: () {
-                        setupUser(context);
-                      },
-                      elevation: 4.0,
-                      splashColor: Colors.blueGrey,
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white, fontSize: 16.0),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               ],
             ),
