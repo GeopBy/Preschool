@@ -49,6 +49,7 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
         .get()
         .then((DocumentSnapshot ds) {
       _role = ds.data['role'];
+      _myclass = List.from(ds.data['myClass']);
     });
   }
 
@@ -100,6 +101,23 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
           "address": _address,
           "profileimage": _profileimage
         });
+      }).whenComplete(() {
+        if (_role == 'parent') {
+          for (int i = 0; i < _myclass.length; i++) {
+            Firestore.instance
+                .collection('Class')
+                .document(_myclass[i])
+                .collection('Parents')
+                .document(user.uid)
+                .setData({
+              "username": _username,
+              "fullname": _fullname,
+              "phonenumber": _phonenumber,
+              "address": _address,
+              "profileimage": _profileimage
+            });
+          }
+        }
       });
       if (_role == 'teacher') {
         Navigator.push(
@@ -107,7 +125,8 @@ class _SetupProfilePageState extends State<SetupProfilePage> {
             MaterialPageRoute(
                 builder: (context) =>
                     MainScreen(onSignedOut: widget.onSignedOut)));
-      } else {
+      } else if (_role == 'parent') {
+        //them thong tin vao parent
         Navigator.push(
             context,
             MaterialPageRoute(

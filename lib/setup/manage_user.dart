@@ -17,6 +17,7 @@ class _ManageUserPageState extends State<ManageUserPage> {
   List<String> _listidclass = List<String>();
   List<String> _listclass = List<String>();
   List<bool> _inputs = List<bool>();
+
   void initState() {
     _getInfo();
     super.initState();
@@ -34,8 +35,9 @@ class _ManageUserPageState extends State<ManageUserPage> {
           });
     });
     _role = 'Quyền';
-    _listrole = ['Quyền', 'teacher', 'parent'];
-    setState(() {});
+    setState(() {
+      _listrole = ['Quyền', 'teacher', 'parent'];
+    });
   }
 
   void ItemChange(bool val, int index) {
@@ -149,10 +151,6 @@ class _ManageUserPageState extends State<ManageUserPage> {
                 .createUserWithEmailAndPassword(
                     email: _email, password: _password))
             .user;
-        // FirebaseUser user = (await FirebaseAuth.instance
-        //         .createUserWithEmailAndPassword(
-        //             email: _email, password: _password))
-        //     .user;
         if (_role == 'teacher') {
           Firestore.instance.runTransaction((transaction) async {
             await transaction.update(
