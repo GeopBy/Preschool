@@ -113,7 +113,9 @@ class _FriendsState extends State<Friends>
       },
       itemCount: _users.length,
       itemBuilder: (BuildContext context, int index) {
-        String username = _users[index].username;
+        String username;
+        if (index == 0) username = 'Giáo viên '+_users[index].username;
+        else username = _users[index].username;
         String fullname = _users[index].fullname;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -24,7 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     getNumberPost();
     _pageController = PageController(initialPage: 2);
-    _title = 'Feeds';
+    _title = 'Bảng tin';
     super.initState();
   }
 
@@ -178,19 +178,19 @@ class _MainScreenState extends State<MainScreen> {
 
   void navigationTapped(int page) {
     if (page == 0) {
-      _title = 'Chats';
+      _title = 'Tin nhắn';
     }
     if (page == 1) {
-      _title = 'Friends';
+      _title = 'Phụ huynh';
     }
     if (page == 2) {
-      _title = 'Feeds';
+      _title = 'Bảng tin';
     }
     if (page == 3) {
-      _title = 'Notifications';
+      _title = 'Thông báo';
     }
     if (page == 4) {
-      _title = 'Profile';
+      _title = 'Thông tin lớp';
     }
     print('mmmmmmmmmmmmmmmmmmmmmmmmmmm' + user.toString());
     _pageController.jumpToPage(page);
