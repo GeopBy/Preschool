@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:preschool/setup/manage_class.dart';
 import 'package:preschool/setup/manage_user.dart';
 import 'package:preschool/setup/root.dart';
+import 'package:preschool/setup/signin.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text("Admin"),
       ),
       body: Column(
@@ -48,7 +51,7 @@ class _AdminPageState extends State<AdminPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => RootPage(), fullscreenDialog: true));
+                builder: (context) => SigninPage(), fullscreenDialog: true));
       });
     } catch (e) {
       print(e);

@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/admin_page.dart';
-import 'package:preschool/setup/home_demo.dart';
-import 'package:preschool/setup/setup_children.dart';
 import 'package:preschool/setup/setup_profile.dart';
 import 'package:preschool/setup/signin.dart';
 
@@ -25,6 +21,7 @@ class _RootPageState extends State<RootPage>
   }
 
   Future<void> getCurrentUser() async {
+    print('first');
     _user = await FirebaseAuth.instance.currentUser().whenComplete(() {
       if (!mounted) return;
       setState(() {
@@ -41,7 +38,7 @@ class _RootPageState extends State<RootPage>
   }
 
   Scaffold runRoot() {
-    if (_user != null && _user.uid != null) {
+    if (_user != null) {
       return Scaffold(
         body: StreamBuilder<DocumentSnapshot>(
           stream: Firestore.instance

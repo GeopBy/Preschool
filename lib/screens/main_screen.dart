@@ -1,12 +1,17 @@
+import 'dart:ffi';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preschool/models/user.dart';
 import 'package:preschool/screens/chats.dart';
 import 'package:preschool/screens/friends.dart';
 import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/notifications.dart';
 import 'package:preschool/screens/profile.dart';
 import 'package:preschool/setup/root.dart';
+import 'package:preschool/setup/signin.dart';
 import 'package:preschool/util/data.dart';
 import 'package:preschool/widgets/icon_badge.dart';
 
@@ -15,27 +20,31 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen>
+    with AutomaticKeepAliveClientMixin<MainScreen> {
   PageController _pageController;
   int _page = 2;
   FirebaseUser user;
   String _title, _idclass;
+  User _user;
   int _count = 0;
+  bool _load = false;
+
   void initState() {
-    getNumberPost();
+    getInfo();
     _pageController = PageController(initialPage: 2);
     _title = 'Bảng tin';
     super.initState();
   }
 
-  @override
-  getNumberPost() async {
+  getInfo() async {
     user = await FirebaseAuth.instance.currentUser();
     await Firestore.instance
         .collection('Users')
         .document(user.uid)
         .get()
         .then((DocumentSnapshot ds) {
+      _user = User.fromDocument(ds);
       _idclass = ds.data['idClass'];
     });
     //tim so luong post
@@ -47,24 +56,41 @@ class _MainScreenState extends State<MainScreen> {
         .then((ds) {
       _count = ds.documents.length;
     });
+    if (!mounted) return;
+    setState(() {
+      _load = true;
+    });
   }
 
-  Future<void> _signOut(BuildContext context) async {
+  get wantKeepAlive => true;
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return _load == false ? buildWaitingScreen() : runMain();
+  }
+
+  Scaffold buildWaitingScreen() {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  _signOut() async {
     try {
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
       await _firebaseAuth.signOut().whenComplete(() {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RootPage(), fullscreenDialog: true));
+            context, MaterialPageRoute(builder: (context) => SigninPage()));
       });
     } catch (e) {
       print(e);
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget runMain() {
     return Scaffold(
       appBar: new AppBar(
         title: new Text(_title),
@@ -86,15 +112,14 @@ class _MainScreenState extends State<MainScreen> {
                   children: <Widget>[
                     new Center(
                       child: CircleAvatar(
-                        backgroundImage: ExactAssetImage(
-                            "assets/cm${random.nextInt(10)}.jpeg"),
+                        backgroundImage: NetworkImage(_user.profileimage),
                         minRadius: 20,
                         maxRadius: 50,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 15),
-                      child: new Text("Yến Nhi", textScaleFactor: 1.3),
+                      child: new Text(_user.username, textScaleFactor: 1.3),
                     )
                   ],
                 ),
@@ -108,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
             CustomListTile(Icons.person, 'Trang cá nhân', () => {}),
             CustomListTile(Icons.event_available, 'Sự kiện', () => {}),
             CustomListTile(
-                Icons.power_settings_new, 'Đăng xuất', () => _signOut(context))
+                Icons.power_settings_new, 'Đăng xuất', () => _signOut())
           ],
         ),
       ),
@@ -192,7 +217,6 @@ class _MainScreenState extends State<MainScreen> {
     if (page == 4) {
       _title = 'Thông tin lớp';
     }
-    print('mmmmmmmmmmmmmmmmmmmmmmmmmmm' + user.toString());
     _pageController.jumpToPage(page);
   }
 

@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:preschool/setup/admin_page.dart';
-import 'package:preschool/setup/home_demo.dart';
-import 'package:preschool/setup/root.dart';
 import 'package:preschool/setup/setup_profile.dart';
 
 class SigninPage extends StatefulWidget {
@@ -62,33 +59,34 @@ class _SigninPageState extends State<SigninPage> {
     if (formState.validate()) {
       formState.save();
       try {
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: _password)
-            .whenComplete(() {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => RootPage(), fullscreenDialog: true));
+        FirebaseUser user = (await FirebaseAuth.instance
+                .signInWithEmailAndPassword(email: _email, password: _password))
+            .user;
+        Firestore.instance
+            .collection('Users')
+            .document(user.uid)
+            .get()
+            .then((DocumentSnapshot ds) {
+          // use ds as a snapshot
+          if (ds.data['role'] == 'admin') {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AdminPage(), fullscreenDialog: true));
+          } else if (ds.data['profileimage'] == null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SetupProfilePage(),
+                    fullscreenDialog: true));
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MainScreen(),
+                    fullscreenDialog: true));
+          }
         });
-        // Firestore.instance
-        //     .collection('Users')
-        //     .document(user.uid)
-        //     .get()
-        //     .then((DocumentSnapshot ds) {
-        //   // use ds as a snapshot
-        //   if (ds.data['role'] == 'admin') {
-        //     Navigator.push(
-        //         context, MaterialPageRoute(builder: (context) => AdminPage()));
-        //   } else if (ds.data['profileimage'] == null) {
-        //     Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //             builder: (context) => SetupProfilePage(user: user)));
-        //   } else {
-        //     Navigator.push(
-        //         context, MaterialPageRoute(builder: (context) => MainScreen()));
-        //   }
-        // });
       } catch (e) {
         print(e.message);
         if (e.message ==
