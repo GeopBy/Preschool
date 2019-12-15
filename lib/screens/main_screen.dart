@@ -4,12 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preschool/Untitled.dart';
+import 'package:preschool/drawers/childrens.dart';
+import 'package:preschool/drawers/profile.dart';
 import 'package:preschool/models/user.dart';
 import 'package:preschool/screens/chats.dart';
+import 'package:preschool/screens/class.dart';
 import 'package:preschool/screens/friends.dart';
 import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/notifications.dart';
-import 'package:preschool/screens/profile.dart';
 import 'package:preschool/setup/root.dart';
 import 'package:preschool/setup/signin.dart';
 import 'package:preschool/util/data.dart';
@@ -127,10 +130,21 @@ class _MainScreenState extends State<MainScreen>
             ),
             CustomListTile(Icons.wallpaper, 'Album ảnh', () => {}),
             CustomListTile(Icons.receipt, 'Đơn xin phép', () => {}),
-            CustomListTile(Icons.child_care, 'Học sinh', () => {}),
+            CustomListTile(
+                Icons.child_care,
+                'Học sinh',
+                () => {
+                      Navigator.pop(context),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Childrens()))
+                    }),
             CustomListTile(Icons.event_note, 'Thời khóa biểu', () => {}),
             CustomListTile(Icons.fastfood, 'Thực đơn', () => {}),
-            CustomListTile(Icons.person, 'Trang cá nhân', () => {}),
+            CustomListTile(Icons.person, 'Trang cá nhân',  () => {
+                      Navigator.pop(context),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Profile()))
+                    }),
             CustomListTile(Icons.event_available, 'Sự kiện', () => {}),
             CustomListTile(
                 Icons.power_settings_new, 'Đăng xuất', () => _signOut())
@@ -146,7 +160,7 @@ class _MainScreenState extends State<MainScreen>
           Friends(),
           Home(),
           Notifications(),
-          Profile(),
+          Class(),
         ],
       ),
       bottomNavigationBar: Theme(

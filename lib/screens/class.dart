@@ -3,15 +3,14 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:preschool/models/user.dart';
 
-class Profile extends StatefulWidget {
+class Class extends StatefulWidget {
   @override
-  _ProfileState createState() => _ProfileState();
+  _ClassState createState() => _ClassState();
 }
 
-class _ProfileState extends State<Profile>
-    with AutomaticKeepAliveClientMixin<Profile> {
+class _ClassState extends State<Class>
+    with AutomaticKeepAliveClientMixin<Class> {
   @override
   static Random random = Random();
   String _idclass, _room, _year, _name;
@@ -90,12 +89,6 @@ class _ProfileState extends State<Profile>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              // CircleAvatar(
-              //   backgroundImage: AssetImage(
-              //     "assets/cm${random.nextInt(10)}.jpeg",
-              //   ),
-              //   radius: 70,
-              // ),
               Text(
                 _name,
                 style: TextStyle(

@@ -1,25 +1,21 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:preschool/drawers/detail_children.dart';
 
-class Notifications extends StatefulWidget {
+class Childrens extends StatefulWidget {
   @override
-  _NotificationsState createState() => _NotificationsState();
+  _ChildrensState createState() => _ChildrensState();
 }
 
-class _NotificationsState extends State<Notifications>
-    with AutomaticKeepAliveClientMixin<Notifications> {
+class _ChildrensState extends State<Childrens>
+    with AutomaticKeepAliveClientMixin<Childrens> {
   @override
   FirebaseUser user;
   String _idclass;
-  String _profileimage;
-  String _teacher;
-  String _name;
-  var _url =
-      "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60";
+  String _idchildren;
   bool _load = false;
+  String childrenId;
   void initState() {
     getCurrentUser();
     super.initState();
@@ -35,36 +31,16 @@ class _NotificationsState extends State<Notifications>
         .then((DocumentSnapshot ds) {
       _idclass = ds.data['idClass'];
     });
-    //tim teacher
-    await Firestore.instance
-        .collection('Class')
-        .document(_idclass)
-        .get()
-        .then((DocumentSnapshot ds) {
-      _teacher = ds.data['teacher'];
-    });
-    //tim ten va hinh anh
-    await Firestore.instance
-        .collection('Users')
-        .document(_teacher)
-        .get()
-        .then((DocumentSnapshot ds) {
-      if (ds.data['profileimage'] != null) {
-        _profileimage = ds.data['profileimage'];
-      }
-      if (ds.data['username'] != null) _name = ds.data['username'];
-    });
     setState(() {
       _load = true;
     });
-    print('hhhhhhhhhhhhhhhhhhhhhh' + user.toString());
   }
 
   get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _load == false ? buildWaitingScreen() : runNotifications();
+    return _load == false ? buildWaitingScreen() : runChildrens();
   }
 
   Scaffold buildWaitingScreen() {
@@ -76,15 +52,12 @@ class _NotificationsState extends State<Notifications>
     );
   }
 
-  String readTimestamp(Timestamp timeStamp) {
-    int timestamp = timeStamp.millisecondsSinceEpoch;
-    final DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    String time = timeago.format(dateTime);
-    return time;
-  }
-
-  Widget runNotifications() {
+  Widget runChildrens() {
     return new Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Danh sách trẻ"),
+      ),
       body: new Center(
           child: new Column(children: <Widget>[
         new Expanded(
@@ -92,8 +65,7 @@ class _NotificationsState extends State<Notifications>
           stream: Firestore.instance
               .collection('Class')
               .document(_idclass)
-              .collection("Posts")
-              .orderBy('stt', descending: true)
+              .collection("Childrens")
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -109,7 +81,7 @@ class _NotificationsState extends State<Notifications>
                       alignment: Alignment.centerRight,
                       child: Container(
                         height: 0.5,
-                        width: MediaQuery.of(context).size.width / 1.3,
+                        width: MediaQuery.of(context).size.width / 1.0,
                         child: Divider(),
                       ),
                     );
@@ -117,24 +89,23 @@ class _NotificationsState extends State<Notifications>
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(0),
                       child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage:
-                              CachedNetworkImageProvider(_profileimage),
-                          radius: 25,
-                        ),
                         contentPadding: EdgeInsets.all(0),
-                        title: Text(_name + ' đã thêm bài viết mới trong lớp'),
+                        title: Text(snapshot.data.documents[index].data['name']),
+                        subtitle: Text(snapshot.data.documents[index].data['fullname']),
                         trailing: Text(
-                          readTimestamp(
-                              snapshot.data.documents[index].data['times']),
+                          snapshot.data.documents[index].data['birth'],
                           style: TextStyle(
                             fontWeight: FontWeight.w300,
-                            fontSize: 11,
+                            fontSize: 13,
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          _idchildren= snapshot.data.documents[index].documentID;
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => DetailChildren(_idclass, _idchildren)));
+                        },
                       ),
                     );
                   },
