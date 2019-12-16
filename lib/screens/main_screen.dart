@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preschool/Untitled.dart';
 import 'package:preschool/drawers/childrens.dart';
+import 'package:preschool/drawers/demo.dart';
+import 'package:preschool/drawers/demo2.dart';
 import 'package:preschool/drawers/profile.dart';
 import 'package:preschool/models/user.dart';
 import 'package:preschool/screens/chats.dart';
@@ -128,7 +130,11 @@ class _MainScreenState extends State<MainScreen>
                 ),
               ),
             ),
-            CustomListTile(Icons.wallpaper, 'Album ảnh', () => {}),
+            CustomListTile(Icons.wallpaper, 'Album ảnh',   () => {
+                      Navigator.pop(context),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Demo()))
+                    }),
             CustomListTile(Icons.receipt, 'Đơn xin phép', () => {}),
             CustomListTile(
                 Icons.child_care,
