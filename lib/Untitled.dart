@@ -1,162 +1,158 @@
-// import 'dart:math';
+// import 'dart:convert';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:flutter/material.dart';
-// import 'package:preschool/util/data.dart';
+// import 'package:table_calendar/table_calendar.dart';
 
-// class Profile extends StatefulWidget {
+// class Menu extends StatefulWidget {
 //   @override
-//   _ProfileState createState() => _ProfileState();
-// }
+//   State<StatefulWidget> createState() => _MenuState();
+//   }
 
-// class _ProfileState extends State<Profile> {
-//   static Random random = Random();
+// class _MenuState extends State<Menu> {
+//   CalendarController _controller;
+ 
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = CalendarController();
+    
+//   } 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Thực đơn'),
+//       ),
 //       body: SingleChildScrollView(
-//         padding: EdgeInsets.symmetric(horizontal: 10),
-//         child: Container(
-//           width: MediaQuery.of(context).size.width,
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: <Widget>[
-
-//               SizedBox(height: 40),
-//               CircleAvatar(
-//                 backgroundImage: AssetImage(
-//                   "assets/cm${random.nextInt(10)}.jpeg",
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: <Widget>[
+//             TableCalendar(
+            
+//               initialCalendarFormat: CalendarFormat.week,
+//               calendarStyle: CalendarStyle(
+//                   canEventMarkersOverflow: true,
+//                   todayColor: Colors.orange,
+//                   selectedColor: Theme.of(context).primaryColor,
+//                   todayStyle: TextStyle(
+//                       fontWeight: FontWeight.bold,
+//                       fontSize: 18.0,
+//                       color: Colors.white)),
+//               headerStyle: HeaderStyle(
+//                 centerHeaderTitle: true,
+//                 formatButtonDecoration: BoxDecoration(
+//                   color: Colors.orange,
+//                   borderRadius: BorderRadius.circular(20.0),
 //                 ),
-//                 radius: 50,
+//                 formatButtonTextStyle: TextStyle(color: Colors.white),
+//                 formatButtonShowsNext: false,
 //               ),
-//               SizedBox(height: 10),
-//               Text(
-//                 names[random.nextInt(10)],
-//                 style: TextStyle(
-//                   fontWeight: FontWeight.bold,
-//                   fontSize: 22,
-//                 ),
+//               startingDayOfWeek: StartingDayOfWeek.monday,
+
+//               builders: CalendarBuilders(
+//                 selectedDayBuilder: (context, date, events) => Container(
+//                     margin: const EdgeInsets.all(4.0),
+//                     alignment: Alignment.center,
+//                     decoration: BoxDecoration(
+//                         color: Theme.of(context).primaryColor,
+//                         borderRadius: BorderRadius.circular(10.0)),
+//                     child: Text(
+//                       date.day.toString(),
+//                       style: TextStyle(color: Colors.blue),
+//                     )),
+//                 todayDayBuilder: (context, date, events) => Container(
+//                     margin: const EdgeInsets.all(4.0),
+//                     alignment: Alignment.center,
+//                     decoration: BoxDecoration(
+//                         color: Colors.orange,
+//                         borderRadius: BorderRadius.circular(10.0)),
+//                     child: Text(
+//                       date.day.toString(),
+//                       style: TextStyle(color: Colors.white),
+//                     )),
 //               ),
-//               SizedBox(height: 3),
-
-//               Text(
-//                 "Status should be here",
-//                 style: TextStyle(
-//                 ),
-//               ),
-//               SizedBox(height: 20),
-//               Row(
-//                 mainAxisSize: MainAxisSize.min,
-//                 children: <Widget>[
-//                   FlatButton(
-//                     child: Icon(
-//                       Icons.message,
-//                       color: Colors.white,
-//                     ),
-//                     color: Colors.grey,
-//                     onPressed: (){},
-//                   ),
-//                   SizedBox(width: 10),
-//                   FlatButton(
-//                     child: Icon(
-//                       Icons.add,
-//                       color: Colors.white,
-//                     ),
-//                     color: Theme.of(context).accentColor,
-//                     onPressed: (){},
-//                   ),
-
-//                 ],
-//               ),
-
-//               SizedBox(height: 40),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 50),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: <Widget>[
-//                     Column(
-//                       children: <Widget>[
-//                         Text(
-//                           random.nextInt(10000).toString(),
-//                           style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 22,
-//                           ),
-//                         ),
-//                         SizedBox(height: 4),
-//                         Text(
-//                           "Posts",
-//                           style: TextStyle(
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-
-//                     Column(
-//                       children: <Widget>[
-//                         Text(
-//                           random.nextInt(10000).toString(),
-//                           style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 22,
-//                           ),
-//                         ),
-//                         SizedBox(height: 4),
-//                         Text(
-//                           "Friends",
-//                           style: TextStyle(
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-
-//                     Column(
-//                       children: <Widget>[
-//                         Text(
-//                           random.nextInt(10000).toString(),
-//                           style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 22,
-//                           ),
-//                         ),
-//                         SizedBox(height: 4),
-//                         Text(
-//                           "Groups",
-//                           style: TextStyle(
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-
-//                   ],
-//                 ),
-//               ),
-//               SizedBox(height: 20),
-//               GridView.builder(
-//                 shrinkWrap: true,
-//                 physics: NeverScrollableScrollPhysics(),
-//                 primary: false,
-//                 padding: EdgeInsets.all(5),
-//                 itemCount: 15,
-//                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                   crossAxisCount: 3,
-//                   childAspectRatio: 200 / 200,
-//                 ),
-//                 itemBuilder: (BuildContext context, int index) {
-//                   return Padding(
-//                     padding: EdgeInsets.all(5.0),
-//                     child: Image.asset(
-//                       "assets/cm${random.nextInt(10)}.jpeg",
-//                       fit: BoxFit.cover,
-//                     ),
-//                   );
-//                 },
-//               ),
-//             ],
-//           ),
+//               calendarController: _controller,
+//             ),
+            
+//           ],
 //         ),
 //       ),
+//       floatingActionButton: FloatingActionButton(
+//         child: Icon(Icons.add),
+//         onPressed: _showAddDialog,
+//       ),
 //     );
+//   }
+
+//   final _formKey = GlobalKey<FormState>();
+//   String _buoisang;
+//   String _buoitrua;
+//   String _buoixe;
+//   _showAddDialog() {
+//     showDialog(
+//         context: context,
+//         builder: (_) => AlertDialog(
+//               content: Form(
+//                 key: _formKey,
+//                 child: Container(
+//                   width: 300.0,
+//                   height: 500.0,
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.max,
+//                     children: <Widget>[
+//                       Padding(
+//                         padding: EdgeInsets.only(top: 8.0),
+//                         child: TextFormField(
+//                           validator: (input) {
+//                             if (input.isEmpty) {
+//                               return 'Vui lòng nhập dữ liệu ';
+//                             }
+//                           },
+//                           onSaved: (input) => _buoisang = input,
+//                           decoration: InputDecoration(labelText: 'BUỔI SÁNG'),
+//                         ),
+//                       ),
+//                       Padding(
+//                         padding: EdgeInsets.only(top: 8.0),
+//                         child: TextFormField(
+//                           validator: (input) {
+//                             if (input.isEmpty) {
+//                               return 'Vui lòng nhập dữ liệu ';
+//                             }
+//                           },
+//                           onSaved: (input) => _buoitrua = input,
+//                           decoration: InputDecoration(labelText: 'BUỔI TRƯA'),
+//                         ),
+//                       ),
+//                       Padding(
+//                         padding: EdgeInsets.only(top: 8.0),
+//                         child: TextFormField(
+//                           validator: (input) {
+//                             if (input.isEmpty) {
+//                               return 'Vui lòng nhập dữ liệu ';
+//                             }
+//                           },
+//                           onSaved: (input) => _buoixe = input,
+//                           decoration: InputDecoration(labelText: 'BUỔI XẾ'),
+//                         ),
+//                       ),
+//                       Padding(
+//                         padding: const EdgeInsets.all(8.0),
+//                         child: RaisedButton(
+//                           child: Text("OK"),
+//                           onPressed: () {//firebase
+//                             if (_formKey.currentState.validate()) {
+//                               _formKey.currentState.save();
+//                             }
+//                           },
+//                         ),
+//                       )
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ));
 //   }
 // }
