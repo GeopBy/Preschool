@@ -57,7 +57,6 @@ class _NotificationsState extends State<Notifications>
     setState(() {
       _load = true;
     });
-    print('hhhhhhhhhhhhhhhhhhhhhh' + user.toString());
   }
 
   get wantKeepAlive => true;

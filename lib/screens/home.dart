@@ -63,7 +63,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
     setState(() {
       _load = true;
     });
-    print('hhhhhhhhhhhhhhhhhhhhhh' + user.toString());
   }
 
   get wantKeepAlive => true;

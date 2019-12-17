@@ -77,7 +77,6 @@ class _FriendsState extends State<Friends>
     setState(() {
       _load = true;
     });
-    print('hhhhhhhhhhhhhhhhhhhhhh' + _urls.toString());
   }
 
   get wantKeepAlive => true;

@@ -1,15 +1,10 @@
-import 'dart:ffi';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:preschool/Untitled.dart';
 import 'package:preschool/drawers/childrens.dart';
 import 'package:preschool/drawers/demo.dart';
-import 'package:preschool/drawers/demo2.dart';
 import 'package:preschool/drawers/menu.dart';
-import 'package:preschool/drawers/menu.dart' as prefix0;
 import 'package:preschool/drawers/profile.dart';
 import 'package:preschool/models/user.dart';
 import 'package:preschool/screens/chats.dart';
@@ -17,9 +12,7 @@ import 'package:preschool/screens/class.dart';
 import 'package:preschool/screens/friends.dart';
 import 'package:preschool/screens/home.dart';
 import 'package:preschool/screens/notifications.dart';
-import 'package:preschool/setup/root.dart';
 import 'package:preschool/setup/signin.dart';
-import 'package:preschool/util/data.dart';
 import 'package:preschool/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
