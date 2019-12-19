@@ -14,11 +14,12 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
   CalendarController _controller;
 
   FirebaseUser user;
+  static String _sang = '', _trua = '', _xe = '';
   String _idclass;
   bool _load = false;
   bool _view = false;
+  bool _viewButton = false;
   String _dayChoose;
-  List<String> _menu = List<String>();
   void initState() {
     getInfo();
     _controller = CalendarController();
@@ -34,6 +35,7 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
         .get()
         .then((DocumentSnapshot ds) {
       _idclass = ds.data['idClass'];
+      if (ds.data['role'] == 'teacher') _viewButton = true;
     });
     if (!mounted) return;
 
@@ -49,6 +51,9 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
 
   Future<void> loadMenu(String day) async {
     //tim id class
+    _sang = '';
+    _trua = '';
+    _xe = '';
     await Firestore.instance
         .collection('Class')
         .document(_idclass)
@@ -57,9 +62,10 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
         .get()
         .then((DocumentSnapshot ds) {
       if (ds.exists) {
-        if (ds.data['sang'] != null) _menu.add(ds.data['sang']);
-        if (ds.data['trua'] != null) _menu.add(ds.data['trua']);
-        if (ds.data['chieu'] != null) _menu.add(ds.data['chieu']);
+        if (ds.data['sang'] != null) _sang=(ds.data['sang']);
+        if (ds.data['trua'] != null) _trua=(ds.data['trua']);
+        if (ds.data['chieu'] != null) _xe= (ds.data['chieu']);
+        print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + _sang + _trua + _xe);
       }
     });
     if (!mounted) return;
@@ -134,7 +140,6 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
                 _dayChoose = (time.day.toString() +
                     time.month.toString() +
                     time.year.toString());
-                _menu.clear();
                 loadMenu(_dayChoose);
               },
               builders: CalendarBuilders(
@@ -142,11 +147,11 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
                     margin: const EdgeInsets.all(4.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.blue,
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Text(
                       date.day.toString(),
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.white),
                     )),
                 todayDayBuilder: (context, date, events) => Container(
                     margin: const EdgeInsets.all(4.0),
@@ -162,7 +167,99 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
               calendarController: _controller,
             ),
             if (_view == true)
-              Text(_menu.toString())
+              Container(
+                margin: const EdgeInsets.only(top: 20, left: 20.0, right: 20.0),
+                width: 400.0,
+                height: 400.0,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Image.asset(
+                            'assets/bre.png',
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              child: Text(
+                                'Buoi sang:',
+                                style: TextStyle(color: Colors.orange),
+                              ),
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(top: 10.0, left: 30.0),
+                              child: Text(_sang,
+                                  style: TextStyle(color: Colors.blue)),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            top: 10.0,
+                          ),
+                          child: Image.asset(
+                            'assets/lunch.png',
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              child: Text(
+                                'Buoi trua:',
+                                style: TextStyle(color: Colors.orange),
+                              ),
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(top: 10.0, left: 30.0),
+                              child: Text(_trua,
+                                  style: TextStyle(color: Colors.blue)),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            top: 10.0,
+                          ),
+                          child: Image.asset(
+                            'assets/xe.png',
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              child: Text(
+                                'Buoi xe:',
+                                style: TextStyle(color: Colors.orange),
+                              ),
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(top: 10.0, left: 30.0),
+                              child: Text(_xe,
+                                  style: TextStyle(color: Colors.blue)),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              )
             else
               Container(
                 alignment: Alignment.center,
@@ -171,9 +268,12 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _showAddDialog,
+      floatingActionButton: Visibility(
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: _showAddDialog,
+        ),
+        visible: _viewButton,
       ),
     );
   }

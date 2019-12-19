@@ -1,9 +1,9 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preschool/drawers/childrens.dart';
 import 'package:preschool/drawers/demo.dart';
+import 'package:preschool/drawers/events.dart';
 import 'package:preschool/drawers/menu.dart';
 import 'package:preschool/drawers/profile.dart';
 import 'package:preschool/models/user.dart';
@@ -159,7 +159,14 @@ class _MainScreenState extends State<MainScreen>
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Profile()))
                     }),
-            CustomListTile(Icons.event_available, 'Sự kiện', () => {}),
+            CustomListTile(
+                Icons.event_available,
+                'Sự kiện',
+                () => {
+                      Navigator.pop(context),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Event()))
+                    }),
             CustomListTile(
                 Icons.power_settings_new, 'Đăng xuất', () => _signOut())
           ],

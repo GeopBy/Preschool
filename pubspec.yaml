@@ -49,6 +49,7 @@ dependencies:
   album_saver: ^0.0.2
   table_calendar: ^2.0.1
   shared_preferences: ^0.5.4+5
+  flutter_time_picker_spinner: ^1.0.6
 
 
 
@@ -82,6 +83,13 @@ flutter:
     - assets/cm9.jpeg
     - assets/cm0.jpeg
     - assets/LGO.jpg
+    - assets/bre.png
+    - assets/lunch.png
+    - assets/xe.png
+    - assets/iconend.png
+    - assets/iconevent.png
+    - assets/iconhome.png
+    - assets/iconstart.png
     
     - assets/images/google_signin_button.png
     - assets/images/upload.svg
