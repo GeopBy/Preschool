@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preschool/drawers/changeclass.dart';
 import 'package:preschool/drawers/childrens.dart';
 import 'package:preschool/drawers/demo.dart';
 import 'package:preschool/drawers/events.dart';
@@ -28,8 +29,9 @@ class _MainScreenState extends State<MainScreen>
   FirebaseUser user;
   String _title, _idclass;
   User _user;
-  int _count = 0;
+  static int _count = 0;
   bool _load = false;
+  bool _view = false;
 
   void initState() {
     getInfo();
@@ -47,6 +49,7 @@ class _MainScreenState extends State<MainScreen>
         .then((DocumentSnapshot ds) {
       _user = User.fromDocument(ds);
       _idclass = ds.data['idClass'];
+      if (ds.data['role'] == 'teacher') _view = true;
     });
     //tim so luong post
     await Firestore.instance
@@ -55,7 +58,9 @@ class _MainScreenState extends State<MainScreen>
         .collection('Posts')
         .getDocuments()
         .then((ds) {
-      _count = ds.documents.length;
+      setState(() {
+        _count = ds.documents.length;
+      });
     });
     if (!mounted) return;
     setState(() {
@@ -135,14 +140,19 @@ class _MainScreenState extends State<MainScreen>
                           MaterialPageRoute(builder: (context) => Demo()))
                     }),
             CustomListTile(Icons.receipt, 'Đơn xin phép', () => {}),
-            CustomListTile(
-                Icons.child_care,
-                'Học sinh',
-                () => {
-                      Navigator.pop(context),
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Childrens()))
-                    }),
+            Visibility(
+              child: CustomListTile(
+                  Icons.change_history,
+                  'Học sinh',
+                  () => {
+                        Navigator.pop(context),
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Childrens()))
+                      }),
+              visible: _view,
+            ),
             CustomListTile(
                 Icons.event_note,
                 'Thời khóa biểu',
@@ -175,6 +185,19 @@ class _MainScreenState extends State<MainScreen>
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Event()))
                     }),
+            Visibility(
+              child: CustomListTile(
+                  Icons.change_history,
+                  'Đổi lớp',
+                  () => {
+                        Navigator.pop(context),
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChangeClass()))
+                      }),
+              visible: !_view,
+            ),
             CustomListTile(
                 Icons.power_settings_new, 'Đăng xuất', () => _signOut())
           ],
