@@ -1,28 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preschool/models/timetable.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
-class Event extends StatefulWidget {
+class TimeTables extends StatefulWidget {
   @override
-  _EventState createState() => _EventState();
+  _TimeTablesState createState() => _TimeTablesState();
 }
 
-class _EventState extends State<Event>
-    with AutomaticKeepAliveClientMixin<Event> {
+class _TimeTablesState extends State<TimeTables>
+    with AutomaticKeepAliveClientMixin<TimeTables> {
   @override
   CalendarController _controller;
 
   FirebaseUser user;
-  static String _name, _place, _start, _end;
   String _idclass;
   String hours, min, iam;
   bool _load = false;
   bool _view = false;
   bool _viewButton = false;
   String _dayChoose;
+  List<TimeTable> _list = List<TimeTable>();
   void initState() {
     getInfo();
     _controller = CalendarController();
@@ -46,47 +47,42 @@ class _EventState extends State<Event>
       _dayChoose = DateTime.now().day.toString() +
           DateTime.now().month.toString() +
           DateTime.now().year.toString();
-      loadEvent(_dayChoose);
+      loadTimeTable(_dayChoose);
       _load = true;
       _view = true;
     });
   }
 
-  Future<void> loadEvent(String day) async {
-    //tim id class
-    _name = '';
-    _place = '';
-    _start = '';
-    _end = '';
+  Future<void> loadTimeTable(String day) async {
+    _list.clear();
     await Firestore.instance
         .collection('Class')
         .document(_idclass)
-        .collection('Event')
+        .collection('TimeTable')
         .document(day)
-        .get()
-        .then((DocumentSnapshot ds) {
-      if (ds.exists) {
-        if (ds.data['name'] != null) _name = (ds.data['name']);
-        if (ds.data['place'] != null) _place = (ds.data['place']);
-        if (ds.data['start'] != null) _start = (ds.data['start']);
-        if (ds.data['end'] != null) _end = (ds.data['end']);
-      }
+        .collection('Schedule')
+        .orderBy('pos', descending: false)
+        .getDocuments()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.documents.forEach((f) {
+        if (f.exists) _list.add(TimeTable.fromDocument(f));
+      });
     });
     if (!mounted) return;
-
     setState(() {
       _view = true;
     });
   }
 
-  Future<void> addEvent(
-      String time, String name, String place, String start, String end) async {
+  Future<void> addTimeTable(
+      String time, String name, String start, String end, String pos) async {
     await Firestore.instance
         .collection('Class')
         .document(_idclass)
-        .collection('Event')
+        .collection('TimeTable')
         .document(time)
-        .setData({'name': name, 'place': place, 'start': start, 'end': end});
+        .collection('Schedule')
+        .add({'name': name, 'start': start, 'end': end, 'pos': pos});
   }
 
   get wantKeepAlive => true;
@@ -118,7 +114,7 @@ class _EventState extends State<Event>
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             TableCalendar(
               initialCalendarFormat: CalendarFormat.week,
@@ -144,7 +140,7 @@ class _EventState extends State<Event>
                 _dayChoose = (time.day.toString() +
                     time.month.toString() +
                     time.year.toString());
-                loadEvent(_dayChoose);
+                loadTimeTable(_dayChoose);
               },
               builders: CalendarBuilders(
                 selectedDayBuilder: (context, date, events) => Container(
@@ -171,144 +167,9 @@ class _EventState extends State<Event>
               calendarController: _controller,
             ),
             if (_view == true)
-              Container(
-                margin: const EdgeInsets.only(top: 20, left: 20.0, right: 20.0),
-                width: 400.0,
-                height: 400.0,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: 400.0,
-                      height: 50.0,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Image.asset(
-                              'assets/iconevent.png',
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                child: Text(
-                                  'Tên sự kiện: ',
-                                  style: TextStyle(color: Colors.orange),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_name,
-                                    style: TextStyle(color: Colors.blue)),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 400.0,
-                      height: 50.0,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20.0,
-                              top: 10.0,
-                            ),
-                            child: Image.asset(
-                              'assets/iconhome.png',
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                child: Text(
-                                  'Địa điểm tổ chức: ',
-                                  style: TextStyle(color: Colors.orange),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_place,
-                                    style: TextStyle(color: Colors.blue)),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 400.0,
-                      height: 50.0,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20.0,
-                              top: 10.0,
-                            ),
-                            child: Image.asset(
-                              'assets/iconstart.png',
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                child: Text(
-                                  'Thời gian bắt đầu: ',
-                                  style: TextStyle(color: Colors.orange),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_start,
-                                    style: TextStyle(color: Colors.blue)),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 400.0,
-                      height: 50.0,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20.0,
-                              top: 10.0,
-                            ),
-                            child: Image.asset(
-                              'assets/iconend.png',
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                child: Text(
-                                  'Thời gian kết thúc: ',
-                                  style: TextStyle(color: Colors.orange),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_end,
-                                    style: TextStyle(color: Colors.blue)),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
+              for (int i = 0; i < _list.length; i++)
+                Text(
+                    _list[i].start + ' - ' + _list[i].end + ' : ' + _list[i].name)
             else
               Container(
                 alignment: Alignment.center,
@@ -329,9 +190,9 @@ class _EventState extends State<Event>
 
   final _formKey = GlobalKey<FormState>();
   String name;
-  String place;
   String start;
   String end;
+  String pos;
   _showAddDialog() {
     showDialog(
         context: context,
@@ -358,18 +219,6 @@ class _EventState extends State<Event>
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: TextFormField(
-                          validator: (input) {
-                            if (input.isEmpty) {
-                              return 'Vui lòng nhập dữ liệu ';
-                            }
-                          },
-                          onSaved: (input) => place = input,
-                          decoration: InputDecoration(labelText: 'Địa điểm'),
-                        ),
-                      ),
-                      Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text('BẮT ĐẦU'),
                       ),
@@ -378,14 +227,15 @@ class _EventState extends State<Event>
                         child: TimePickerSpinner(
                           is24HourMode: false,
                           normalTextStyle:
-                              TextStyle(fontSize: 14, color: Colors.deepOrange),
+                              TextStyle(fontSize: 14, color: Colors.orange),
                           highlightedTextStyle:
-                              TextStyle(fontSize: 14, color: Colors.yellow),
+                              TextStyle(fontSize: 14, color: Colors.blue),
                           spacing: 20,
                           itemHeight: 30,
                           isForce2Digits: true,
                           onTimeChange: (time) {
                             setState(() {
+                              pos = time.millisecondsSinceEpoch.toString();
                               if (time.hour < 10) {
                                 hours = '0' + time.hour.toString();
                               } else {
@@ -439,9 +289,9 @@ class _EventState extends State<Event>
                             //firebase
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-                              addEvent(_dayChoose, name, place, start, end);
+                              addTimeTable(_dayChoose, name, start, end, pos);
                               Navigator.pop(context);
-                              loadEvent(_dayChoose);
+                              loadTimeTable(_dayChoose);
                             }
                           },
                         ),

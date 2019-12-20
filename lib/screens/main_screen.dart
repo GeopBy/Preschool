@@ -6,6 +6,7 @@ import 'package:preschool/drawers/demo.dart';
 import 'package:preschool/drawers/events.dart';
 import 'package:preschool/drawers/menu.dart';
 import 'package:preschool/drawers/profile.dart';
+import 'package:preschool/drawers/timetables.dart';
 import 'package:preschool/models/user.dart';
 import 'package:preschool/screens/chats.dart';
 import 'package:preschool/screens/class.dart';
@@ -142,7 +143,14 @@ class _MainScreenState extends State<MainScreen>
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Childrens()))
                     }),
-            CustomListTile(Icons.event_note, 'Thời khóa biểu', () => {}),
+            CustomListTile(
+                Icons.event_note,
+                'Thời khóa biểu',
+                () => {
+                      Navigator.pop(context),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => TimeTables()))
+                    }),
             CustomListTile(
                 Icons.fastfood,
                 'Thực đơn',
