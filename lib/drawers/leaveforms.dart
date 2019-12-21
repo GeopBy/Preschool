@@ -1,29 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preschool/models/children.dart';
+import 'package:preschool/models/leaveform.dart';
 import 'package:preschool/models/timetable.dart';
 import 'package:preschool/screens/main_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
-class TimeTables extends StatefulWidget {
+class LeaveForms extends StatefulWidget {
   @override
-  _TimeTablesState createState() => _TimeTablesState();
+  _LeaveFormsState createState() => _LeaveFormsState();
 }
 
-class _TimeTablesState extends State<TimeTables>
-    with AutomaticKeepAliveClientMixin<TimeTables> {
+class _LeaveFormsState extends State<LeaveForms>
+    with AutomaticKeepAliveClientMixin<LeaveForms> {
   @override
   CalendarController _controller;
-
+  String parent, children;
   FirebaseUser user;
   String _idclass;
-  String hours, min, iam;
   bool _load = false;
   bool _view = false;
   bool _viewButton = false;
   String _dayChoose;
-  List<TimeTable> _list = List<TimeTable>();
+  String pos;
+  List<String> _class = List<String>();
+  List<Children> _childrens = List<Children>();
+  List<LeaveForm> _leaveforms = List<LeaveForm>();
   void initState() {
     getInfo();
     _controller = CalendarController();
@@ -39,50 +43,96 @@ class _TimeTablesState extends State<TimeTables>
         .get()
         .then((DocumentSnapshot ds) {
       _idclass = ds.data['idClass'];
-      if (ds.data['role'] == 'teacher') _viewButton = true;
+      _class = List.from(ds.data['myClass']);
+      if (ds.data['role'] == 'teacher')
+        _viewButton = true;
+      else
+        parent = ds.data['fullname'];
     });
-    if (!mounted) return;
-
+    if (_viewButton == false) {
+      await Firestore.instance
+          .collection('Users')
+          .document(user.uid)
+          .collection('myChildren')
+          .getDocuments()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.documents.forEach((f) {
+          _childrens.add(Children.fromDocument(f));
+        });
+      });
+      //tim children hien tai
+      for (int i = 0; i < _class.length; i++) {
+        if (_idclass == _class[i]) {
+          children = _childrens[i].fullname;
+        }
+      }
+    }
     setState(() {
       _dayChoose = DateTime.now().day.toString() +
           DateTime.now().month.toString() +
           DateTime.now().year.toString();
-      loadTimeTable(_dayChoose);
+      loadLeaveForm(_dayChoose);
       _load = true;
       _view = true;
     });
   }
 
-  Future<void> loadTimeTable(String day) async {
-    _list.clear();
-    await Firestore.instance
-        .collection('Class')
-        .document(_idclass)
-        .collection('TimeTable')
-        .document(day)
-        .collection('Schedule')
-        .orderBy('pos', descending: false)
-        .getDocuments()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.documents.forEach((f) {
-        if (f.exists) _list.add(TimeTable.fromDocument(f));
+  Future<void> loadLeaveForm(String day) async {
+    //neu la phu huynh
+    _leaveforms.clear();
+    if (_viewButton == false) {
+      await Firestore.instance
+          .collection('Class')
+          .document(_idclass)
+          .collection('LeaveForm')
+          .orderBy('pos', descending: true)
+          .getDocuments()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.documents.forEach((f) {
+          if (f.exists) {
+            if (f.data['uid'] == user.uid && f.data['day'] == day)
+              _leaveforms.add(LeaveForm.fromDocument(f));
+          }
+        });
       });
-    });
+    } else {
+      //neu la giao vien
+      await Firestore.instance
+          .collection('Class')
+          .document(_idclass)
+          .collection('LeaveForm')
+          .orderBy('pos', descending: true)
+          .getDocuments()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.documents.forEach((f) {
+          if (f.exists) {
+            if (f.data['day'] == day)
+              _leaveforms.add(LeaveForm.fromDocument(f));
+          }
+        });
+      });
+    }
     if (!mounted) return;
     setState(() {
       _view = true;
     });
   }
 
-  Future<void> addTimeTable(
-      String time, String name, String start, String end, String pos) async {
+  Future<void> addLeaveForm(String day, String parent, String children,
+      String reason, String pos, String numberofday, String uid) async {
     await Firestore.instance
         .collection('Class')
         .document(_idclass)
-        .collection('TimeTable')
-        .document(time)
-        .collection('Schedule')
-        .add({'name': name, 'start': start, 'end': end, 'pos': pos});
+        .collection('LeaveForm')
+        .add({
+      'day': day,
+      'parent': parent,
+      'children': children,
+      'pos': pos,
+      'reason': reason,
+      'numberofday': numberofday,
+      'uid': uid
+    });
   }
 
   get wantKeepAlive => true;
@@ -110,7 +160,7 @@ class _TimeTablesState extends State<TimeTables>
           onPressed: () => Navigator.push(
               context, MaterialPageRoute(builder: (context) => MainScreen())),
         ),
-        title: Text('Thời khóa biểu'),
+        title: Text('Đơn nghỉ phép'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -137,10 +187,11 @@ class _TimeTablesState extends State<TimeTables>
               ),
               startingDayOfWeek: StartingDayOfWeek.monday,
               onDaySelected: (time, events) {
+                pos = time.millisecondsSinceEpoch.toString();
                 _dayChoose = (time.day.toString() +
                     time.month.toString() +
                     time.year.toString());
-                loadTimeTable(_dayChoose);
+                loadLeaveForm(_dayChoose);
               },
               builders: CalendarBuilders(
                 selectedDayBuilder: (context, date, events) => Container(
@@ -167,9 +218,12 @@ class _TimeTablesState extends State<TimeTables>
               calendarController: _controller,
             ),
             if (_view == true)
-              for (int i = 0; i < _list.length; i++)
-                Text(
-                    _list[i].start + ' - ' + _list[i].end + ' : ' + _list[i].name)
+              for (int i = 0; i < _leaveforms.length; i++)
+                Text(_leaveforms[i].children +
+                    ' - ' +
+                    _leaveforms[i].reason +
+                    ' - ' +
+                    _leaveforms[i].numberofday)
             else
               Container(
                 alignment: Alignment.center,
@@ -183,16 +237,14 @@ class _TimeTablesState extends State<TimeTables>
           child: Icon(Icons.add),
           onPressed: _showAddDialog,
         ),
-        visible: _viewButton,
+        visible: !_viewButton,
       ),
     );
   }
 
   final _formKey = GlobalKey<FormState>();
-  String name;
-  String start;
-  String end;
-  String pos;
+  String reason;
+  String numberofday;
   _showAddDialog() {
     showDialog(
         context: context,
@@ -213,72 +265,22 @@ class _TimeTablesState extends State<TimeTables>
                               return 'Vui lòng nhập dữ liệu ';
                             }
                           },
-                          onSaved: (input) => name = input,
+                          onSaved: (input) => reason = input,
                           decoration:
-                              InputDecoration(labelText: 'Nhập tên môn học:'),
+                              InputDecoration(labelText: 'Nhập lí do nghỉ:'),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('BẮT ĐẦU'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TimePickerSpinner(
-                          is24HourMode: false,
-                          normalTextStyle:
-                              TextStyle(fontSize: 14, color: Colors.orange),
-                          highlightedTextStyle:
-                              TextStyle(fontSize: 14, color: Colors.blue),
-                          spacing: 20,
-                          itemHeight: 30,
-                          isForce2Digits: true,
-                          onTimeChange: (time) {
-                            setState(() {
-                              pos = time.millisecondsSinceEpoch.toString();
-                              if (time.hour < 10) {
-                                hours = '0' + time.hour.toString();
-                              } else {
-                                hours = time.hour.toString();
-                              }
-                              if (time.minute < 10)
-                                min = '0' + time.minute.toString();
-                              else
-                                min = time.minute.toString();
-                              start = hours + ' : ' + min;
-                            });
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: TextFormField(
+                          validator: (input) {
+                            if (input.isEmpty) {
+                              return 'Vui lòng nhập dữ liệu ';
+                            }
                           },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('KẾT THÚC'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TimePickerSpinner(
-                          is24HourMode: false,
-                          normalTextStyle:
-                              TextStyle(fontSize: 14, color: Colors.orange),
-                          highlightedTextStyle:
-                              TextStyle(fontSize: 14, color: Colors.blue),
-                          spacing: 20,
-                          itemHeight: 30,
-                          isForce2Digits: true,
-                          onTimeChange: (time) {
-                            setState(() {
-                              if (time.hour < 10) {
-                                hours = '0' + time.hour.toString();
-                              } else {
-                                hours = time.hour.toString();
-                              }
-                              if (time.minute < 10)
-                                min = '0' + time.minute.toString();
-                              else
-                                min = time.minute.toString();
-                              end = hours + ' : ' + min;
-                            });
-                          },
+                          onSaved: (input) => numberofday = input,
+                          decoration:
+                              InputDecoration(labelText: 'Nhập số ngày nghỉ:'),
                         ),
                       ),
                       Padding(
@@ -289,9 +291,10 @@ class _TimeTablesState extends State<TimeTables>
                             //firebase
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-                              addTimeTable(_dayChoose, name, start, end, pos);
+                              addLeaveForm(_dayChoose, parent, children, reason,
+                                  pos, numberofday, user.uid);
                               Navigator.pop(context);
-                              loadTimeTable(_dayChoose);
+                              loadLeaveForm(_dayChoose);
                             }
                           },
                         ),

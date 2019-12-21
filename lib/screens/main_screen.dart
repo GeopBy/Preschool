@@ -5,6 +5,7 @@ import 'package:preschool/drawers/changeclass.dart';
 import 'package:preschool/drawers/childrens.dart';
 import 'package:preschool/drawers/demo.dart';
 import 'package:preschool/drawers/events.dart';
+import 'package:preschool/drawers/leaveforms.dart';
 import 'package:preschool/drawers/menu.dart';
 import 'package:preschool/drawers/profile.dart';
 import 'package:preschool/drawers/timetables.dart';
@@ -58,9 +59,7 @@ class _MainScreenState extends State<MainScreen>
         .collection('Posts')
         .getDocuments()
         .then((ds) {
-      setState(() {
-        _count = ds.documents.length;
-      });
+      _count = ds.documents.length;
     });
     if (!mounted) return;
     setState(() {
@@ -139,7 +138,14 @@ class _MainScreenState extends State<MainScreen>
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Demo()))
                     }),
-            CustomListTile(Icons.receipt, 'Đơn xin phép', () => {}),
+            CustomListTile(
+                Icons.receipt,
+                'Đơn xin phép',
+                () => {
+                      Navigator.pop(context),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LeaveForms()))
+                    }),
             Visibility(
               child: CustomListTile(
                   Icons.change_history,
