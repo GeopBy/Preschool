@@ -163,73 +163,209 @@ class _LeaveFormsState extends State<LeaveForms>
         title: Text('Đơn nghỉ phép'),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            TableCalendar(
-              initialCalendarFormat: CalendarFormat.week,
-              calendarStyle: CalendarStyle(
-                  canEventMarkersOverflow: true,
-                  todayColor: Colors.orange,
-                  selectedColor: Theme.of(context).primaryColor,
-                  todayStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      color: Colors.white)),
-              headerStyle: HeaderStyle(
-                centerHeaderTitle: true,
-                formatButtonDecoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            //  crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TableCalendar(
+                initialCalendarFormat: CalendarFormat.week,
+                calendarStyle: CalendarStyle(
+                    canEventMarkersOverflow: true,
+                    todayColor: Colors.orange,
+                    selectedColor: Theme.of(context).primaryColor,
+                    todayStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                        color: Colors.white)),
+                headerStyle: HeaderStyle(
+                  centerHeaderTitle: true,
+                  formatButtonDecoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  formatButtonTextStyle: TextStyle(color: Colors.white),
+                  formatButtonShowsNext: false,
                 ),
-                formatButtonTextStyle: TextStyle(color: Colors.white),
-                formatButtonShowsNext: false,
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                onDaySelected: (time, events) {
+                  pos = time.millisecondsSinceEpoch.toString();
+                  _dayChoose = (time.day.toString() +
+                      time.month.toString() +
+                      time.year.toString());
+                  loadLeaveForm(_dayChoose);
+                },
+                builders: CalendarBuilders(
+                  selectedDayBuilder: (context, date, events) => Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: Text(
+                        date.day.toString(),
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  todayDayBuilder: (context, date, events) => Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: Text(
+                        date.day.toString(),
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
+                calendarController: _controller,
               ),
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              onDaySelected: (time, events) {
-                pos = time.millisecondsSinceEpoch.toString();
-                _dayChoose = (time.day.toString() +
-                    time.month.toString() +
-                    time.year.toString());
-                loadLeaveForm(_dayChoose);
-              },
-              builders: CalendarBuilders(
-                selectedDayBuilder: (context, date, events) => Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
+              if (_view == true)
+                //if()
+                for (int i = 0; i < _leaveforms.length; i++)
+                  // Text(_leaveforms[i].children +
+                  //     ' - ' +
+                  //     _leaveforms[i].reason +
+                  //     ' - ' +
+                  //     _leaveforms[i].numberofday)
+                  Container(
+                    margin: const EdgeInsets.only(
+                        top: 20.0, left: 20.0, right: 20.0),
+                    width: 400.0,
+                 //   height: 130.0,
+                    //decoration: BorderRadius.all(8),
                     decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Text(
-                      date.day.toString(),
-                      style: TextStyle(color: Colors.white),
-                    )),
-                todayDayBuilder: (context, date, events) => Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Text(
-                      date.day.toString(),
-                      style: TextStyle(color: Colors.white),
-                    )),
-              ),
-              calendarController: _controller,
-            ),
-            if (_view == true)
-              for (int i = 0; i < _leaveforms.length; i++)
-                Text(_leaveforms[i].children +
-                    ' - ' +
-                    _leaveforms[i].reason +
-                    ' - ' +
-                    _leaveforms[i].numberofday)
-            else
-              Container(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(),
-              ),
-          ],
+                        border: Border.all(color: Colors.blueAccent)),
+                    //  color: Colors.blue,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Visibility(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.people,
+                                          color: Colors.cyan,
+                                          size: 30.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5.0, top: 6.0),
+                                          child: Text(
+                                              'Phụ huynh:   ' +
+                                                  _leaveforms[i].parent,
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  visible: _viewButton,
+                                ),
+                                Visibility(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        //    padding: const EdgeInsets.only(right:120.0),
+                                        Icon(
+                                          Icons.child_care,
+                                          color: Colors.cyan,
+                                          size: 30.0,
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5.0, top: 6.0),
+                                          child: Text(
+                                              'Tên bé       :   ' +
+                                                  _leaveforms[i].children,
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  visible: _viewButton,
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(left: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      //    padding: const EdgeInsets.only(right:120.0),
+                                      Icon(
+                                        Icons.pages,
+                                        color: Colors.cyan,
+                                        size: 30.0,
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 5.0, top: 6.0),
+                                        child: Text(
+                                            'Lí do          :   ' +
+                                                _leaveforms[i].reason,
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 18)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(left: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      //    padding: const EdgeInsets.only(right:120.0),
+                                      Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.cyan,
+                                        size: 30.0,
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 5.0, top: 6.0, bottom: 5.0),
+                                        child: Text(
+                                            'Số ngày     :   ' +
+                                                _leaveforms[i].numberofday,
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 18)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+              else
+                Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: Visibility(

@@ -25,19 +25,47 @@ class _AdminPageState extends State<AdminPage> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          RaisedButton(
-            onPressed: nagivateToAccount,
-            child: Text('Quản lý người dùng'),
+          new Row(
+             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+             children: <Widget>[
+                Container(
+                  height: 150.0,
+            child: RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+                      textColor: Colors.white,
+                      color: Colors.blue,
+              onPressed: nagivateToAccount,
+              child: Text('Quản lý người dùng'),
+            ),
           ),
-          RaisedButton(
-            onPressed: nagivateToclass,
-            child: Text('Quản lý lớp'),
+            Container(
+              height: 150.0,
+            child: RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+                      textColor: Colors.black,
+                      color: Colors.yellow,
+                 onPressed: nagivateToclass,
+            child: Text(' Quản lý lớp học    '),
+            ),
           ),
-          RaisedButton(
-            onPressed: nagivateToSignOut,
-            child: Text('Đăng xuất'),
+             ],
+
+          ),
+        
+       
+          Container(
+            width: 100.0,
+            child: Padding(
+              padding: const EdgeInsets.only(top:155.0),
+              child: RaisedButton(
+                 textColor: Colors.white,
+                      color: Colors.red,
+                onPressed: nagivateToSignOut,
+                child: Text('Đăng xuất'),
+              ),
+            ),
           )
         ],
       ),

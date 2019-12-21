@@ -37,7 +37,7 @@ class Children {
         address: doc['address'],
         father: doc['father'],
         fatherjob: doc['fatherjob'],
-        mother: doc['motherjob'],
+        mother: doc['mother'],
         motherjob: doc['motherjob']);
   }
 }

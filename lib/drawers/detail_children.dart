@@ -16,10 +16,12 @@ class _DetailChildrenState extends State<DetailChildren>
   String _idchildren;
   String _idclass;
   Children _children;
+ 
   bool _load = false;
   void initState() {
     getInfo();
     super.initState();
+    
   }
 
   Future<void> getInfo() async {
@@ -34,6 +36,8 @@ class _DetailChildrenState extends State<DetailChildren>
         });
     setState(() {
       _load = true;
+     
+
     });
   }
 
@@ -55,10 +59,374 @@ class _DetailChildrenState extends State<DetailChildren>
 
   Widget runChildrens() {
     return new Scaffold(
-        appBar: AppBar(
+     appBar: AppBar(
           centerTitle: true,
-          title: Text(_children.name+_children.fullname+_children.birth),
+          title: Text(_children.name),
         ),
-        body: new Center());
-  }
+      body:  new Container(
+      color: Colors.white,
+      child: new ListView(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              new Container(
+                color: Color(0xffFFFFFF),
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 25.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    'Họ và tên bé:',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    'Ngày sinh:',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                             Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 8.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    _children.fullname,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    _children.birth,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                            
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    'Giới tính:',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    'Quốc tịch:',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                             Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 8.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    _children.sex,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    _children.country,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                           Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    'Họ và tên bố',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    'Nghề nghiệp',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                             Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 8.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    _children.father,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    _children.fatherjob,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                          Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    'Họ và tên mẹ',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    'Nghề nghiệp',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                             Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 8.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: 100,
+                                  child: new Text(
+                                    _children.mother,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: new Text(
+                                    _children.motherjob,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+                                  ),
+                                ),
+                                flex: 2,
+                              ),
+                            ],
+                          )),
+                      
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    'Địa chỉ',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 2.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                               new Flexible(
+                                child: new Text(
+                                 
+                                 _children.address,style: TextStyle(
+                                  //  decoration: TextDecoration.underline,
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+
+                                ),
+                              ),
+                            ],
+                          )),
+                       Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    'Nơi sinh',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 2.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                               new Flexible(
+                                child: new Text(
+                                 
+                                 _children.placeofbirth,style: TextStyle(
+                                  //  decoration: TextDecoration.underline,
+                                        fontSize: 16.0,
+                                        color: Colors.lightGreen[700]),
+
+                                ),
+                              ),
+                            ],
+                          )),
+                      
+                  //    !_status ? _getActionButtons() : new Container(),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+
+
+    ));}
+        
+         
+      
+         
 }

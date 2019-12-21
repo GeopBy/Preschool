@@ -168,8 +168,64 @@ class _TimeTablesState extends State<TimeTables>
             ),
             if (_view == true)
               for (int i = 0; i < _list.length; i++)
-                Text(
-                    _list[i].start + ' - ' + _list[i].end + ' : ' + _list[i].name)
+            //     Text(
+            //         _list[i].start + ' - ' + _list[i].end + ' : ' + _list[i].name)
+                  Container(
+                    margin: const EdgeInsets.only(
+                        top: 20.0, left: 20.0, right: 20.0),
+                    width: 400.0,
+                 //   height: 130.0,
+                    //decoration: BorderRadius.all(8),
+                    // decoration: BoxDecoration(
+                    //     border: Border.all(color: Colors.blueAccent)),
+                    //  color: Colors.blue,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Visibility(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.access_time,
+                                          color: Colors.cyan,
+                                          size: 30.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5.0, top: 6.0),
+                                          child: Text(
+                                              'Thời gian:   ' +
+                                                  _list[i].start +'  -  '+_list[i].end+ '  :   ' + _list[i].name,
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 16)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                //  visible: _viewButton,
+                                ),
+                                
+                                
+                                
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
             else
               Container(
                 alignment: Alignment.center,
@@ -197,12 +253,15 @@ class _TimeTablesState extends State<TimeTables>
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              content: Form(
+              content: SingleChildScrollView(
+                child: Form(
+                  
                 key: _formKey,
                 child: Container(
                   width: 300.0,
                   height: 500.0,
                   child: Column(
+                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Padding(
@@ -300,6 +359,7 @@ class _TimeTablesState extends State<TimeTables>
                   ),
                 ),
               ),
+              )
             ));
   }
 }
