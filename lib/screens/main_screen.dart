@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preschool/drawers/albums.dart';
 import 'package:preschool/drawers/changeclass.dart';
 import 'package:preschool/drawers/childrens.dart';
-import 'package:preschool/drawers/demo.dart';
 import 'package:preschool/drawers/events.dart';
 import 'package:preschool/drawers/leaveforms.dart';
 import 'package:preschool/drawers/menu.dart';
@@ -136,7 +136,7 @@ class _MainScreenState extends State<MainScreen>
                 () => {
                       Navigator.pop(context),
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Demo()))
+                          MaterialPageRoute(builder: (context) => Albums()))
                     }),
             CustomListTile(
                 Icons.receipt,
