@@ -26,7 +26,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with AutomaticKeepAliveClientMixin<MainScreen> {
   PageController _pageController;
-  int _page = 2;
+  int _page = 1;
   FirebaseUser user;
   String _title, _idclass;
   User _user;
@@ -274,19 +274,19 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void navigationTapped(int page) {
+    // if (page == 0) {
+    //   _title = 'Tin nhắn';
+    // }
     if (page == 0) {
-      _title = 'Tin nhắn';
-    }
-    if (page == 1) {
       _title = 'Phụ huynh';
     }
-    if (page == 2) {
+    if (page == 1) {
       _title = 'Bảng tin';
     }
-    if (page == 3) {
+    if (page == 2) {
       _title = 'Thông báo';
     }
-    if (page == 4) {
+    if (page == 3) {
       _title = 'Thông tin lớp';
     }
     _pageController.jumpToPage(page);
