@@ -11,17 +11,21 @@ import 'package:uuid/uuid.dart';
 
 class ChooseImage extends StatefulWidget {
   @override
-  _ChooseImageState createState() => _ChooseImageState();
+  final Album _album;
+  ChooseImage(this._album);
+  _ChooseImageState createState() => _ChooseImageState(this._album);
 }
 
 class _ChooseImageState extends State<ChooseImage> {
   @override
+  final Album _album;
+  _ChooseImageState(this._album);
   String _idclass;
-  _ChooseImageState();
   List<Asset> images = List<Asset>();
 
   String _error;
   bool _view = false;
+  bool _load = false;
 
   @override
   void initState() {
@@ -84,11 +88,11 @@ class _ChooseImageState extends State<ChooseImage> {
     });
   }
 
-  Future<void> addImage() async {
-    final Album _album = ModalRoute.of(context).settings.arguments;
-
+  Future<void> addImage(Album _album) async {
     List<String> uploadUrls = [];
-
+    setState(() {
+      _load = true;
+    });
     await Future.wait(
         images.map((Asset asset) async {
           ByteData byteData = await asset.getByteData(quality: 25);
@@ -119,32 +123,32 @@ class _ChooseImageState extends State<ChooseImage> {
         cleanUp: (_) {
           print('eager cleaned up');
         });
-    for (int i = 0; i < uploadUrls.length; i++) {
-      // _album.image.add(uploadUrls[i]);
-      _album.image.insert(i, uploadUrls[i]);
-    }
+    if (_album.image[_album.image.length - 1] == "0") _album.image.removeLast();
 
-    Firestore.instance.runTransaction((transaction) async {
-      await transaction.update(
-          Firestore.instance
-              .collection('Class')
-              .document(_idclass)
-              .collection('Albums')
-              .document(_album.id),
-          {'image': _album.image}).whenComplete(() {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DetailAlbum(),
-                settings: RouteSettings(
-                  arguments: _album,
-                )));
-      });
+    for (int i = 0; i < uploadUrls.length; i++) {
+      print(_album.id);
+      _album.image.insert(i, uploadUrls[i]);
+      print('choose image' + _album.image[i]);
+    }
+    Firestore.instance
+        .collection('Class')
+        .document(_idclass)
+        .collection('Albums')
+        .document(_album.id)
+        .updateData({'image': _album.image}).whenComplete(() {
+      print('add image ' + _album.image.length.toString());
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DetailAlbum(_album),
+              settings: RouteSettings(
+                arguments: _album,
+              )));
     });
   }
 
   Widget build(BuildContext context) {
-    final Album _album = ModalRoute.of(context).settings.arguments;
+    // Album _album = ModalRoute.of(context).settings.arguments;
 
     return new MaterialApp(
       home: new Scaffold(
@@ -155,17 +159,20 @@ class _ChooseImageState extends State<ChooseImage> {
               onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailAlbum(),
-                      settings: RouteSettings(
-                        arguments: _album,
-                      ),
+                      builder: (context) => DetailAlbum(_album),
                     ),
                   )),
           title: Text(_album.name),
         ),
         body: Column(
           children: <Widget>[
-            // Center(child: Text('Error: $_error')),
+            Center(
+                child: Visibility(
+                    child: AlertDialog(
+                        content: SingleChildScrollView(
+                      child: Text('Wait for minutes...'),
+                    )),
+                    visible: _load)),
             Center(
               child: !_view
                   ? RaisedButton(
@@ -174,18 +181,16 @@ class _ChooseImageState extends State<ChooseImage> {
                     )
                   : SizedBox(),
             ),
-
             Center(
               child: _view
                   ? RaisedButton(
                       child: Text('Add Image'),
                       onPressed: () {
-                        addImage();
+                        addImage(_album);
                       },
                     )
                   : SizedBox(),
             ),
-
             Expanded(
               child: buildGridView(),
             )

@@ -99,30 +99,61 @@ class _AlbumsState extends State<Albums>
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blue)),
+                              border:
+                                  Border.all(color: Colors.white, width: 3.0)),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Image.network(
-                                _album[index].image[0],
-                                fit: BoxFit.cover,
+                              ClipRRect(
+                                borderRadius: new BorderRadius.circular(10.0),
+                                child: Image.network(
+                                  _album[index].image[0],
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              Text(
-                                _album[index].name,
-                                style: TextStyle(color: Colors.blue),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 0.0, right: 0.0, top: 2.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      _album[index].name,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              SizedBox(height: 20),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 0.0, right: 0.0, top: 0.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    Text(
+                                      _album[index].date.substring(0, 10),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailAlbum(),
-                              settings: RouteSettings(
-                                arguments: _album[index],
-                              ),
+                              builder: (context) => DetailAlbum(_album[index]),
+                              // settings: RouteSettings(
+                              //   arguments: _album[index],
+                              // ),
                             )));
                   },
                 ),
@@ -150,7 +181,7 @@ class _AlbumsState extends State<Albums>
       'name': name,
       'date': DateTime.now().toString(),
       'pos': DateTime.now().millisecondsSinceEpoch.toString(),
-      'image': List<String>()
+      'image': ['0']
     });
     String _id = ref.documentID;
     Firestore.instance.runTransaction((transaction) async {
@@ -162,27 +193,38 @@ class _AlbumsState extends State<Albums>
               .document(_id),
           {
             "id": _id,
-          }).whenComplete(() {});
+          }).whenComplete(() {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Albums(),
+            ));
+      });
     });
-    Navigator.pop(context);
-
-    Album album = new Album();
-    await Firestore.instance
-        .collection('Class')
-        .document(_idclass)
-        .collection('Albums')
-        .document(_id)
-        .get()
-        .then((DocumentSnapshot ds) {
-      album = Album.fromDocument(ds);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ChooseImage(),
-              settings: RouteSettings(
-                arguments: album,
-              )));
-    });
+    // Navigator.pop(context);
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => Albums(),
+    //     ));
+    // Album album = new Album();
+    // await Firestore.instance
+    //     .collection('Class')
+    //     .document(_idclass)
+    //     .collection('Albums')
+    //     .document(_id)
+    //     .get()
+    //     .then((DocumentSnapshot ds) {
+    //   album = Album.fromDocument(ds);
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => DetailAlbum(album),
+    //           // settings: RouteSettings(
+    //           //   arguments: album,
+    //           // )
+    //           ));
+    // });
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -190,13 +232,14 @@ class _AlbumsState extends State<Albums>
   _showAddDialog() {
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (_) => 
+        AlertDialog(
                 content: SingleChildScrollView(
               child: Form(
                 key: _formKey,
                 child: Container(
                   width: 300.0,
-                  height: 500.0,
+                  height: 200.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.max,
@@ -223,6 +266,7 @@ class _AlbumsState extends State<Albums>
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                               addAlbum(name);
+                              // getUser();
                             }
                           },
                         ),

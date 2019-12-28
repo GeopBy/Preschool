@@ -214,7 +214,7 @@ class _MainScreenState extends State<MainScreen>
         controller: _pageController,
         onPageChanged: onPageChanged,
         children: <Widget>[
-          Chats(),
+          // Chats(),
           Friends(),
           Home(),
           Notifications(),
@@ -234,12 +234,12 @@ class _MainScreenState extends State<MainScreen>
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.message,
-              ),
-              title: Container(height: 0.0),
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(
+            //     Icons.message,
+            //   ),
+            //   title: Container(height: 0.0),
+            // ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.group,

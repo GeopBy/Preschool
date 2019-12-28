@@ -66,30 +66,135 @@ class _ProfileState extends State<Profile>
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 40),
-              CircleAvatar(
-                backgroundImage: NetworkImage(_currentuser.profileimage),
-                radius: 80,
-              ),
-              SizedBox(height: 10),
-              Text(
-                _currentuser.username,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
+              Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 40),
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(_currentuser.profileimage),
+                      radius: 80,
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 3),
-              Text(
-                _currentuser.fullname,
-                style: TextStyle(),
+              Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 50),
+                    Text(
+                      _currentuser.username,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                              enabledBorder: new UnderlineInputBorder(
+                                  borderSide: new BorderSide(
+                                      color: Colors.blueGrey[700])),
+                              prefixIcon: Icon(
+                                Icons.face,
+                                color: Colors.cyan,
+                              ),
+                              hintStyle: TextStyle(
+                                  fontSize: 17.0, color: Colors.black),
+                              hintText: _currentuser.fullname),
+                          enabled: false,
+                        ),
+                      ),
+                    ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                              enabledBorder: new UnderlineInputBorder(
+                                  borderSide: new BorderSide(
+                                      color: Colors.blueGrey[700])),
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: Colors.cyan,
+                              ),
+                              hintStyle: TextStyle(
+                                  fontSize: 17.0, color: Colors.black),
+                              hintText: _currentuser.email),
+                          enabled: false,
+                        ),
+                      ),
+                    ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                              enabledBorder: new UnderlineInputBorder(
+                                  borderSide: new BorderSide(
+                                      color: Colors.blueGrey[700])),
+                              prefixIcon: Icon(
+                                Icons.location_city,
+                                color: Colors.cyan,
+                              ),
+                              hintStyle: TextStyle(
+                                  fontSize: 17.0, color: Colors.black),
+                              hintText: _currentuser.address),
+                          enabled: false,
+                        ),
+                      ),
+                    ]),
+              ),
             ],
           ),
+          // child: Column(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: <Widget>[
+          //     SizedBox(height: 40),
+          //     CircleAvatar(
+          //       backgroundImage: NetworkImage(_currentuser.profileimage),
+          //       radius: 80,
+          //     ),
+          //     SizedBox(height: 10),
+          //     Text(
+          //       _currentuser.username,
+          //       style: TextStyle(
+          //         fontWeight: FontWeight.bold,
+          //         fontSize: 22,
+          //       ),
+          //     ),
+          //     SizedBox(height: 3),
+          //     Text(
+          //       _currentuser.fullname,
+          //       style: TextStyle(),
+          //     ),
+          //     SizedBox(height: 20),
+          //   ],
+          // ),
         ),
       ),
     );

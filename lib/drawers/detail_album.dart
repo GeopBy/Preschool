@@ -6,11 +6,16 @@ import 'package:preschool/drawers/detail_image.dart';
 import 'package:preschool/models/album.dart';
 
 class DetailAlbum extends StatefulWidget {
-  @override
-  _DetailAlbumState createState() => _DetailAlbumState();
+    @override
+
+  Album _album;
+  DetailAlbum(this._album);
+  _DetailAlbumState createState() => _DetailAlbumState(this._album);
 }
 
 class _DetailAlbumState extends State<DetailAlbum> {
+  Album _album;
+  _DetailAlbumState(this._album);
   @override
   void initState() {
     super.initState();
@@ -19,7 +24,8 @@ class _DetailAlbumState extends State<DetailAlbum> {
   }
 
   Widget build(BuildContext context) {
-    final Album _album = ModalRoute.of(context).settings.arguments;
+    // Album _album = ModalRoute.of(context).settings.arguments;
+    print('album la:' +_album.image.toString());
     return new Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -42,11 +48,11 @@ class _DetailAlbumState extends State<DetailAlbum> {
                   physics: NeverScrollableScrollPhysics(),
                   primary: false,
                   padding: EdgeInsets.all(5),
-                  itemCount: _album.image.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     childAspectRatio: 200 / 200,
                   ),
+                  itemCount: _album.image.length,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                         onTap: () => Navigator.push(
@@ -78,10 +84,11 @@ class _DetailAlbumState extends State<DetailAlbum> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ChooseImage(),
-                      settings: RouteSettings(
-                        arguments: _album,
-                      )));
+                      builder: (context) => ChooseImage(_album),
+                      // settings: RouteSettings(
+                      //   arguments: _album,
+                      // )
+                      ));
             },
           ),
           visible: true,

@@ -86,7 +86,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
 
   Widget runHome() {
     return new Scaffold(
-        body: new Center(
+        body: new Container(
             child: new Column(children: <Widget>[
           new Expanded(
               child: new StreamBuilder<QuerySnapshot>(
@@ -108,7 +108,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                     children: snapshot.data.documents
                         .map((DocumentSnapshot document) {
                       return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                        padding:
+                            EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
                         child: InkWell(
                           child: Column(
                             children: <Widget>[
@@ -132,6 +133,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                                   ),
                                 ),
                               ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  child: Text(
+                                    document['description'],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
                               Image.network(
                                 document['postimage'],
                                 height: 170,
