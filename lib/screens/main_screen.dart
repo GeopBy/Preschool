@@ -10,7 +10,6 @@ import 'package:preschool/drawers/menu.dart';
 import 'package:preschool/drawers/profile.dart';
 import 'package:preschool/drawers/timetables.dart';
 import 'package:preschool/models/user.dart';
-import 'package:preschool/screens/chats.dart';
 import 'package:preschool/screens/class.dart';
 import 'package:preschool/screens/friends.dart';
 import 'package:preschool/screens/home.dart';
@@ -36,7 +35,7 @@ class _MainScreenState extends State<MainScreen>
 
   void initState() {
     getInfo();
-    _pageController = PageController(initialPage: 2);
+    _pageController = PageController(initialPage: 1);
     _title = 'Bảng tin';
     super.initState();
   }

@@ -16,6 +16,8 @@ class _AlbumsState extends State<Albums>
   String _idclass;
   List<Album> _album = List<Album>();
   bool _load = false;
+  bool _viewButton = false;
+
   FirebaseUser user;
   void initState() {
     getUser();
@@ -31,6 +33,7 @@ class _AlbumsState extends State<Albums>
         .get()
         .then((DocumentSnapshot ds) {
       _idclass = ds.data['idClass'];
+      if (ds.data['role'] == 'teacher') _viewButton = true;
     });
     DocumentReference documentReference =
         Firestore.instance.collection('Class').document(_idclass);
@@ -168,7 +171,7 @@ class _AlbumsState extends State<Albums>
             ),
             onPressed: _showAddDialog,
           ),
-          visible: true,
+          visible: _viewButton,
         ));
   }
 
@@ -232,8 +235,7 @@ class _AlbumsState extends State<Albums>
   _showAddDialog() {
     showDialog(
         context: context,
-        builder: (_) => 
-        AlertDialog(
+        builder: (_) => AlertDialog(
                 content: SingleChildScrollView(
               child: Form(
                 key: _formKey,
