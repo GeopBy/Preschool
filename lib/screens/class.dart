@@ -57,6 +57,12 @@ class _ClassState extends State<Class>
         .then((QuerySnapshot qs) {
       _parents = qs.documents.length;
     });
+     await documentReference
+        .collection('Albums')
+        .getDocuments()
+        .then((QuerySnapshot qs) {
+      _album = qs.documents.length;
+    });
     setState(() {
       _load = true;
     });

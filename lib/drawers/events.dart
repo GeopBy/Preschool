@@ -191,16 +191,12 @@ class _EventState extends State<Event>
                           Column(
                             children: [
                               Container(
+                                 margin:
+                                    const EdgeInsets.only(left: 5, top: 15),
                                 child: Text(
-                                  'Tên sự kiện: ',
+                                  'Tên sự kiện: ' + _name,
                                   style: TextStyle(color: Colors.orange),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_name,
-                                    style: TextStyle(color: Colors.blue)),
                               ),
                             ],
                           )
@@ -224,16 +220,12 @@ class _EventState extends State<Event>
                           Column(
                             children: [
                               Container(
+                                 margin:
+                                    const EdgeInsets.only(left: 15, top: 15),
                                 child: Text(
-                                  'Địa điểm tổ chức: ',
+                                  'Địa điểm tổ chức: ' + _place,
                                   style: TextStyle(color: Colors.orange),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_place,
-                                    style: TextStyle(color: Colors.blue)),
                               ),
                             ],
                           )
@@ -257,16 +249,12 @@ class _EventState extends State<Event>
                           Column(
                             children: [
                               Container(
+                                margin:
+                                    const EdgeInsets.only(left: 15, top: 15),
                                 child: Text(
-                                  'Thời gian bắt đầu: ',
+                                  'Thời gian bắt đầu: ' + _start,
                                   style: TextStyle(color: Colors.orange),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_start,
-                                    style: TextStyle(color: Colors.blue)),
                               ),
                             ],
                           )
@@ -290,16 +278,12 @@ class _EventState extends State<Event>
                           Column(
                             children: [
                               Container(
+                                margin:
+                                    const EdgeInsets.only(left: 15, top: 15),
                                 child: Text(
-                                  'Thời gian kết thúc: ',
+                                  'Thời gian kết thúc: ' + _end,
                                   style: TextStyle(color: Colors.orange),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, left: 30.0),
-                                child: Text(_end,
-                                    style: TextStyle(color: Colors.blue)),
                               ),
                             ],
                           )
@@ -336,11 +320,12 @@ class _EventState extends State<Event>
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              content: Form(
+                content: SingleChildScrollView(
+              child: Form(
                 key: _formKey,
                 child: Container(
                   width: 300.0,
-                  height: 500.0,
+                  height: 600.0,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
@@ -450,6 +435,6 @@ class _EventState extends State<Event>
                   ),
                 ),
               ),
-            ));
+            )));
   }
 }

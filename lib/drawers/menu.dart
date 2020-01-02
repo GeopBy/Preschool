@@ -62,9 +62,9 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
         .get()
         .then((DocumentSnapshot ds) {
       if (ds.exists) {
-        if (ds.data['sang'] != null) _sang=(ds.data['sang']);
-        if (ds.data['trua'] != null) _trua=(ds.data['trua']);
-        if (ds.data['chieu'] != null) _xe= (ds.data['chieu']);
+        if (ds.data['sang'] != null) _sang = (ds.data['sang']);
+        if (ds.data['trua'] != null) _trua = (ds.data['trua']);
+        if (ds.data['chieu'] != null) _xe = (ds.data['chieu']);
         print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + _sang + _trua + _xe);
       }
     });
@@ -185,15 +185,9 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
                           children: [
                             Container(
                               child: Text(
-                                'Buoi sang:',
-                                style: TextStyle(color: Colors.orange),
+                                'Buổi sáng: ' + _sang,
+                                style: TextStyle(color: Colors.blue),
                               ),
-                            ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.only(top: 10.0, left: 30.0),
-                              child: Text(_sang,
-                                  style: TextStyle(color: Colors.blue)),
                             ),
                           ],
                         )
@@ -214,15 +208,9 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
                           children: [
                             Container(
                               child: Text(
-                                'Buoi trua:',
-                                style: TextStyle(color: Colors.orange),
+                                'Buổi trưa: ' + _trua,
+                                style: TextStyle(color: Colors.blue),
                               ),
-                            ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.only(top: 10.0, left: 30.0),
-                              child: Text(_trua,
-                                  style: TextStyle(color: Colors.blue)),
                             ),
                           ],
                         )
@@ -243,15 +231,9 @@ class _MenuState extends State<Menu> with AutomaticKeepAliveClientMixin<Menu> {
                           children: [
                             Container(
                               child: Text(
-                                'Buoi xe:',
-                                style: TextStyle(color: Colors.orange),
+                                'Buổi xế: '+_xe,
+                                style: TextStyle(color: Colors.blue),
                               ),
-                            ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.only(top: 10.0, left: 30.0),
-                              child: Text(_xe,
-                                  style: TextStyle(color: Colors.blue)),
                             ),
                           ],
                         )

@@ -14,16 +14,17 @@ class DetailAlbum extends StatefulWidget {
   _DetailAlbumState createState() => _DetailAlbumState(this._album);
 }
 
-class _DetailAlbumState extends State<DetailAlbum> {
+class _DetailAlbumState extends State<DetailAlbum>
+    with AutomaticKeepAliveClientMixin<DetailAlbum> {
   Album _album;
   _DetailAlbumState(this._album);
   bool _viewButton = false;
+  bool _load = false;
 
   @override
   void initState() {
     getInfo();
     super.initState();
-    setState(() {});
   }
 
   Future<void> getInfo() async {
@@ -34,13 +35,33 @@ class _DetailAlbumState extends State<DetailAlbum> {
         .document(user.uid)
         .get()
         .then((DocumentSnapshot ds) {
-      if (ds.data['role'] == 'teacher') _viewButton = true;
+      if (ds.data['role'] == 'teacher') {
+        _viewButton = true;
+      }
     });
-    if (!mounted) return;
+    setState(() {
+      _load = true;
+    });
   }
 
+  get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    // Album _album = ModalRoute.of(context).settings.arguments;
+    super.build(context);
+    return _load == false ? buildWaitingScreen() : runDetailAlbum();
+  }
+
+  Scaffold buildWaitingScreen() {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget runDetailAlbum() {
     print('album la:' + _album.image.toString());
     return new Scaffold(
         appBar: AppBar(

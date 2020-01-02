@@ -151,6 +151,7 @@ class _ChooseImageState extends State<ChooseImage> {
     // Album _album = ModalRoute.of(context).settings.arguments;
 
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: new Scaffold(
         appBar: AppBar(
           centerTitle: true,
